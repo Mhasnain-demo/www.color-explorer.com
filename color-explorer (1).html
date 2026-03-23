@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chromatic — Ultimate Color Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5F0;--bg2:#EFECEA;--surface:#FFF;--border:#E2DDD8;--border2:#CCC8C2;--text:#1A1714;--text2:#6B6460;--text3:#A09A95;--sh:rgba(26,23,20,0.08);--sh2:rgba(26,23,20,0.15);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* NAV TABS */
+.nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px var(--sh);}
+.logo{display:flex;align-items:center;gap:12px;}
+.wheel{width:32px;height:32px;border-radius:50%;background:conic-gradient(#FF6B6B 0 40deg,#FF9500 40deg 80deg,#FFD60A 80deg 120deg,#34C759 120deg 160deg,#007AFF 160deg 200deg,#5856D6 200deg 240deg,#FF2D55 240deg 280deg,#FF6B6B 280deg 360deg);box-shadow:0 2px 8px rgba(0,0,0,0.15);animation:spin 8s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.logo-text{font-family:'DM Serif Display',serif;font-size:21px;}
+.logo-sub{font-size:11px;color:var(--text3);letter-spacing:.5px;}
+.tabs{display:flex;gap:4px;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:4px;}
+.tab{padding:7px 18px;border-radius:8px;background:none;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.tab.active{background:var(--text);color:#fff;}
+.badge{font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);background:var(--bg2);padding:5px 12px;border-radius:20px;border:1px solid var(--border);}
+
+/* PAGES */
+.page{display:none;}.page.active{display:block;}
+
+/* ═══ EXPLORER PAGE ═══ */
+.hero{height:210px;display:flex;align-items:center;justify-content:center;transition:background .4s;position:relative;overflow:hidden;}
+.hero-content{text-align:center;z-index:2;position:relative;}
+.hero-eyebrow{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;opacity:.5;}
+.hero-name{font-family:'DM Serif Display',serif;font-size:44px;line-height:1;margin-bottom:14px;letter-spacing:-1px;}
+.hero-codes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.hcode{font-family:'DM Mono',monospace;font-size:12px;padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.28);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.36);cursor:pointer;transition:all .15s;font-weight:500;}
+.hcode:hover{background:rgba(255,255,255,.5);transform:scale(1.04);}
+
+.toolbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 40px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:sticky;top:64px;z-index:90;box-shadow:0 2px 12px var(--sh);}
+.swrap{position:relative;min-width:220px;flex:1;}
+.sico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
+.sinp{width:100%;height:40px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:0 14px 0 40px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .2s;}
+.sinp:focus{border-color:var(--border2);background:var(--surface);}
+.sinp::placeholder{color:var(--text3);}
+.pills{display:flex;gap:6px;flex-wrap:wrap;}
+.pill{height:36px;padding:0 14px;border-radius:20px;background:var(--bg2);border:1.5px solid var(--border);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.pill:hover{background:var(--border);color:var(--text);}
+.pill.active{background:var(--text);color:#fff;border-color:var(--text);}
+.pdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.vtog{display:flex;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;flex-shrink:0;}
+.vbtn{width:38px;height:36px;background:none;border:none;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:15px;}
+.vbtn.active{background:var(--text);color:#fff;}
+
+.main{padding:32px 40px;max-width:1600px;margin:0 auto;}
+.resbar{display:flex;align-items:center;margin-bottom:20px;}
+.rescnt{font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);}
+.sec-hd{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text2);margin-bottom:14px;margin-top:28px;padding-bottom:10px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sec-hd:first-child{margin-top:0;}
+.seccnt{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:8px;}
+.cgrid.list{grid-template-columns:1fr;gap:5px;}
+
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;animation:fadeUp .25s ease both;position:relative;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px var(--sh2);border-color:var(--border2);}
+.sw{height:105px;position:relative;}
+.fbtn{position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.7);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.8);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s,transform .15s;color:#888;}
+.card:hover .fbtn,.fbtn.on{opacity:1;}
+.fbtn.on{color:#FF9500;background:rgba(255,255,255,.9);}
+.fbtn:hover{transform:scale(1.15);}
+.cbody{padding:10px 11px;background:var(--surface);}
+.cname{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;}
+.crow{display:flex;align-items:center;justify-content:space-between;}
+.chex{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);}
+.cpbtn{font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:5px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .12s;}
+.cpbtn:hover{background:var(--text);color:#fff;border-color:var(--text);}
+
+.card.lc{display:flex;align-items:stretch;border-radius:10px;}
+.card.lc .sw{width:60px;height:60px;flex-shrink:0;border-radius:8px 0 0 8px;}
+.card.lc .cbody{flex:1;display:flex;align-items:center;gap:16px;padding:0 14px;}
+.card.lc .cname{width:175px;flex-shrink:0;margin:0;font-size:13px;}
+.lcds{display:flex;gap:7px;flex:1;flex-wrap:wrap;}
+.ltag{font-family:'DM Mono',monospace;font-size:11px;padding:4px 9px;border-radius:6px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .12s;white-space:nowrap;}
+.ltag:hover{background:var(--text);color:#fff;border-color:var(--text);}
+.card.lc .fbtn{opacity:0;}
+.card.lc:hover .fbtn{opacity:1;}
+.card.lc .fbtn.on{opacity:1;}
+
+/* ═══ GRADIENT PAGE ═══ */
+.grad-page{padding:40px;}
+.grad-page h2{font-family:'DM Serif Display',serif;font-size:32px;letter-spacing:-.5px;margin-bottom:6px;}
+.grad-page p{color:var(--text2);font-size:15px;margin-bottom:32px;}
+
+.grad-builder{background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:28px;margin-bottom:28px;box-shadow:0 2px 12px var(--sh);}
+.grad-stops{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+.grad-stop{flex:1;min-width:180px;}
+.stop-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+.stop-inner{display:flex;gap:10px;align-items:center;}
+.color-pick-wrap{position:relative;}
+.swatch-btn{width:48px;height:48px;border-radius:10px;border:2px solid var(--border);cursor:pointer;transition:border-color .15s;flex-shrink:0;}
+.swatch-btn:hover{border-color:var(--border2);}
+input[type=color]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;border:none;}
+.stop-hex{font-family:'DM Mono',monospace;font-size:13px;padding:8px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;width:110px;color:var(--text);outline:none;transition:border-color .2s;}
+.stop-hex:focus{border-color:var(--border2);}
+
+.grad-controls{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:24px;}
+.ctrl-group{display:flex;flex-direction:column;gap:6px;}
+.ctrl-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
+.ctrl-select,.ctrl-input{height:38px;padding:0 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;cursor:pointer;transition:border-color .2s;}
+.ctrl-select:focus,.ctrl-input:focus{border-color:var(--border2);}
+.ctrl-input{width:80px;}
+
+.add-stop-btn,.remove-stop-btn{height:38px;padding:0 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;}
+.add-stop-btn:hover{background:var(--text);color:#fff;border-color:var(--text);}
+.remove-stop-btn{color:#E53E3E;border-color:#FECACA;background:#FFF5F5;}
+.remove-stop-btn:hover{background:#E53E3E;color:#fff;border-color:#E53E3E;}
+
+.grad-preview-box{border-radius:16px;height:160px;margin-bottom:20px;position:relative;overflow:hidden;border:1px solid var(--border);}
+.grad-css-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.grad-css-box{flex:1;font-family:'DM Mono',monospace;font-size:12px;padding:11px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);word-break:break-all;min-width:200px;}
+.copy-grad-btn{height:42px;padding:0 20px;border-radius:8px;background:var(--text);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.copy-grad-btn:hover{opacity:.85;}
+
+.grad-stops-display{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;}
+.grad-stop-chip{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;}
+.chip-sw{width:28px;height:28px;border-radius:6px;flex-shrink:0;}
+.chip-info{display:flex;flex-direction:column;gap:2px;}
+.chip-rgb{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);}
+
+.presets{margin-top:28px;}
+.presets h3{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:16px;}
+.preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.preset-card{border:1.5px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .18s,box-shadow .18s;}
+.preset-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px var(--sh2);}
+.preset-swatch{height:80px;}
+.preset-info{padding:10px 14px;background:var(--surface);}
+.preset-name{font-size:13px;font-weight:600;margin-bottom:2px;}
+.preset-colors{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);}
+
+/* ═══ COLOR MIXER PAGE ═══ */
+.mixer-page{padding:40px;}
+.mixer-page h2{font-family:'DM Serif Display',serif;font-size:32px;letter-spacing:-.5px;margin-bottom:6px;}
+.mixer-page p{color:var(--text2);font-size:15px;margin-bottom:32px;}
+
+.mixer-box{background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:28px;box-shadow:0 2px 12px var(--sh);margin-bottom:28px;}
+.mixer-inputs{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:28px;}
+.mixer-color{flex:1;min-width:200px;}
+.mc-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+.mc-pick{display:flex;gap:10px;align-items:center;margin-bottom:10px;}
+.mc-swatch{width:56px;height:56px;border-radius:12px;border:2px solid var(--border);position:relative;cursor:pointer;transition:border-color .15s;}
+.mc-swatch:hover{border-color:var(--border2);}
+.mc-swatch input[type=color]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;border:none;}
+.mc-hex{font-family:'DM Mono',monospace;font-size:13px;padding:10px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;width:120px;color:var(--text);outline:none;}
+.mc-hex:focus{border-color:var(--border2);}
+.mc-info{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px;}
+.mc-code{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);line-height:1.8;}
+
+.mixer-plus{font-size:28px;color:var(--text3);align-self:center;flex-shrink:0;padding-top:30px;}
+
+.mix-ratio-row{display:flex;gap:16px;align-items:center;margin-bottom:24px;flex-wrap:wrap;}
+.ratio-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
+.ratio-slider{-webkit-appearance:none;appearance:none;width:220px;height:6px;border-radius:3px;outline:none;cursor:pointer;}
+.ratio-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--border2);cursor:pointer;box-shadow:0 2px 6px var(--sh2);}
+.ratio-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);min-width:60px;}
+
+.result-display{background:var(--bg);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;}
+.result-swatch{height:140px;position:relative;display:flex;align-items:center;justify-content:center;}
+.result-label{font-family:'DM Serif Display',serif;font-size:22px;}
+.result-codes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;padding:16px;}
+.rcode{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;cursor:pointer;transition:all .15s;}
+.rcode:hover{background:var(--bg2);border-color:var(--border2);}
+.rcode-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:600;margin-bottom:4px;}
+.rcode-val{font-family:'DM Mono',monospace;font-size:12.5px;font-weight:500;}
+
+.mix-steps{margin-top:20px;}
+.mix-steps h3{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:14px;}
+.steps-row{display:flex;gap:0;border-radius:12px;overflow:hidden;height:70px;border:1.5px solid var(--border);}
+.step{flex:1;display:flex;align-items:flex-end;padding-bottom:8px;justify-content:center;}
+.step-hex{font-family:'DM Mono',monospace;font-size:10px;writing-mode:vertical-lr;transform:rotate(180deg);opacity:.7;}
+
+/* ═══ MODAL ═══ */
+.ov{position:fixed;inset:0;background:rgba(26,23,20,.42);backdrop-filter:blur(8px);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;}
+.ov.open{display:flex;}
+.modal{background:var(--surface);border-radius:20px;width:100%;max-width:480px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.18);animation:mpop .22s cubic-bezier(.34,1.56,.64,1);}
+@keyframes mpop{from{transform:scale(.92);opacity:0;}to{transform:scale(1);opacity:1;}}
+.msw{height:180px;position:relative;}
+.mfavbtn{position:absolute;top:14px;right:14px;padding:7px 14px;border-radius:20px;background:rgba(255,255,255,.7);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.9);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;color:var(--text);transition:all .15s;}
+.mfavbtn:hover{background:rgba(255,255,255,.9);}
+.mbody{padding:24px;}
+.mname{font-family:'DM Serif Display',serif;font-size:28px;letter-spacing:-.5px;margin-bottom:3px;}
+.mcat{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);margin-bottom:20px;font-weight:500;}
+.ctiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.tile{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;cursor:pointer;transition:all .15s;}
+.tile:hover{background:var(--bg2);border-color:var(--border2);}
+.tlbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:600;margin-bottom:4px;}
+.tval{font-family:'DM Mono',monospace;font-size:12.5px;font-weight:500;}
+.mclose{width:100%;height:42px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;}
+.mclose:hover{background:var(--bg2);}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--text);color:#fff;padding:10px 20px;border-radius:30px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:all .2s;z-index:999;white-space:nowrap;box-shadow:0 4px 20px var(--sh2);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.stbtn{position:fixed;bottom:28px;right:28px;width:42px;height:42px;border-radius:50%;background:var(--text);color:#fff;border:none;cursor:pointer;font-size:16px;opacity:0;pointer-events:none;transition:opacity .2s,transform .15s;z-index:90;box-shadow:0 4px 16px var(--sh2);display:flex;align-items:center;justify-content:center;}
+.stbtn:hover{transform:scale(1.08);}
+.stbtn.show{opacity:1;pointer-events:all;}
+.empty{text-align:center;padding:80px 20px;color:var(--text3);}
+.empty-icon{font-size:48px;margin-bottom:12px;}
+.empty h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text2);margin-bottom:6px;}
+
+@media(max-width:640px){
+.nav{padding:0 16px;}.toolbar{padding:12px 16px;top:64px;}.main{padding:20px 16px;}
+.cgrid{grid-template-columns:repeat(auto-fill,minmax(128px,1fr));}
+.hero-name{font-size:28px;}.logo-sub{display:none;}
+.grad-page,.mixer-page{padding:20px;}
+.mixer-plus{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="logo">
+    <div class="wheel"></div>
+    <div>
+      <div class="logo-text">Chromatic</div>
+      <div class="logo-sub">Ultimate Color Explorer</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showPage('explorer')">🎨 Colors</button>
+    <button class="tab" onclick="showPage('gradient')">🌈 Gradient Maker</button>
+    <button class="tab" onclick="showPage('mixer')">🧪 Color Mixer</button>
+  </div>
+  <div class="badge" id="totalBadge">— colors</div>
+</nav>
+
+<!-- ═══ PAGE: EXPLORER ═══ -->
+<div class="page active" id="page-explorer">
+  <div class="hero" id="hero" style="background:#E8A87C;">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Selected Color</div>
+      <div class="hero-name" id="heroName">Sandy Brown</div>
+      <div class="hero-codes">
+        <span class="hcode" id="hHex">#E8A87C</span>
+        <span class="hcode" id="hRgb">rgb(232,168,124)</span>
+        <span class="hcode" id="hHsl">hsl(25°,68%,70%)</span>
+      </div>
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="swrap">
+      <svg class="sico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input class="sinp" id="searchInp" type="text" placeholder="Search name, hex, rgb, hsl…">
+    </div>
+    <div class="pills" id="pills"></div>
+    <div class="vtog">
+      <button class="vbtn active" id="btnG">⊞</button>
+      <button class="vbtn" id="btnL">≡</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="resbar"><div class="rescnt" id="resCnt"></div></div>
+    <div id="cont"></div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: GRADIENT MAKER ═══ -->
+<div class="page" id="page-gradient">
+  <div class="grad-page">
+    <h2>Gradient Maker</h2>
+    <p>Blend 2–4 colors together into beautiful gradients. Copy the CSS instantly.</p>
+    <div class="grad-builder">
+      <div class="grad-stops" id="gradStops"></div>
+      <div class="grad-controls">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Direction</div>
+          <select class="ctrl-select" id="gradDir" onchange="updateGradient()">
+            <option value="to right">→ Left to Right</option>
+            <option value="to left">← Right to Left</option>
+            <option value="to bottom">↓ Top to Bottom</option>
+            <option value="to top">↑ Bottom to Top</option>
+            <option value="to bottom right">↘ Diagonal</option>
+            <option value="to bottom left">↙ Diagonal</option>
+            <option value="135deg">135° Diagonal</option>
+            <option value="45deg">45° Diagonal</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Type</div>
+          <select class="ctrl-select" id="gradType" onchange="updateGradient()">
+            <option value="linear">Linear</option>
+            <option value="radial">Radial</option>
+            <option value="conic">Conic</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Actions</div>
+          <div style="display:flex;gap:8px;">
+            <button class="add-stop-btn" onclick="addStop()">+ Add Color</button>
+            <button class="remove-stop-btn" onclick="removeStop()">− Remove</button>
+          </div>
+        </div>
+      </div>
+      <div class="grad-preview-box" id="gradPreview"></div>
+      <div class="grad-css-row">
+        <div class="grad-css-box" id="gradCSS"></div>
+        <button class="copy-grad-btn" onclick="copyGradCSS()">Copy CSS</button>
+      </div>
+      <div class="grad-stops-display" id="gradChips"></div>
+    </div>
+
+    <div class="presets">
+      <h3>Preset Gradients</h3>
+      <div class="preset-grid" id="presetGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: COLOR MIXER ═══ -->
+<div class="page" id="page-mixer">
+  <div class="mixer-page">
+    <h2>Color Mixer</h2>
+    <p>Add two colors together to see exactly what color they make, with full RGB codes.</p>
+    <div class="mixer-box">
+      <div class="mixer-inputs">
+        <div class="mixer-color">
+          <div class="mc-label">Color A</div>
+          <div class="mc-pick">
+            <div class="mc-swatch" id="mcSwA" style="background:#FF6B6B;">
+              <input type="color" id="mcPickA" value="#FF6B6B" oninput="updateMixer()">
+            </div>
+            <input class="mc-hex" id="mcHexA" value="#FF6B6B" oninput="syncHexA()">
+          </div>
+          <div class="mc-info" id="mcInfoA"></div>
+        </div>
+        <div class="mixer-plus">+</div>
+        <div class="mixer-color">
+          <div class="mc-label">Color B</div>
+          <div class="mc-pick">
+            <div class="mc-swatch" id="mcSwB" style="background:#4ECDC4;">
+              <input type="color" id="mcPickB" value="#4ECDC4" oninput="updateMixer()">
+            </div>
+            <input class="mc-hex" id="mcHexB" value="#4ECDC4" oninput="syncHexB()">
+          </div>
+          <div class="mc-info" id="mcInfoB"></div>
+        </div>
+      </div>
+
+      <div class="mix-ratio-row">
+        <div class="ratio-label">Mix Ratio</div>
+        <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);" id="ratioA">50%</span>
+        <input type="range" class="ratio-slider" id="ratioSlider" min="0" max="100" value="50" oninput="updateMixer()">
+        <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);" id="ratioB">50%</span>
+      </div>
+
+      <div class="result-display">
+        <div class="result-swatch" id="mixResult">
+          <div class="result-label" id="mixName"></div>
+        </div>
+        <div class="result-codes-grid" id="mixCodes"></div>
+      </div>
+
+      <div class="mix-steps" style="margin-top:24px;">
+        <h3>Color Spectrum (10 Steps)</h3>
+        <div class="steps-row" id="mixSteps"></div>
+      </div>
+    </div>
+
+    <!-- Preset combos -->
+    <div class="presets">
+      <h3>Try These Combinations</h3>
+      <div class="preset-grid" id="mixPresets"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="ov" id="ov" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="msw" id="mSw"><button class="mfavbtn" id="mFav" onclick="toggleFavModal()">☆ Save</button></div>
+    <div class="mbody">
+      <div class="mname" id="mName"></div>
+      <div class="mcat" id="mCat"></div>
+      <div class="ctiles" id="mTiles"></div>
+      <button class="mclose" onclick="document.getElementById('ov').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<button class="stbtn" id="stbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// 1000 COLORS DATA
+// ═══════════════════════════════════════════════════════
+const C=[
+// REDS (50)
+{n:"Red",h:"#FF0000",c:"red"},{n:"Crimson",h:"#DC143C",c:"red"},{n:"Firebrick",h:"#B22222",c:"red"},{n:"Dark Red",h:"#8B0000",c:"red"},{n:"Indian Red",h:"#CD5C5C",c:"red"},{n:"Light Coral",h:"#F08080",c:"red"},{n:"Salmon",h:"#FA8072",c:"red"},{n:"Dark Salmon",h:"#E9967A",c:"red"},{n:"Tomato",h:"#FF6347",c:"red"},{n:"Coral Red",h:"#FF6B6B",c:"red"},{n:"Venetian Red",h:"#C80815",c:"red"},{n:"Ferrari Red",h:"#FF2800",c:"red"},{n:"Cadmium Red",h:"#E30022",c:"red"},{n:"Ruby",h:"#9B111E",c:"red"},{n:"Burgundy",h:"#800020",c:"red"},{n:"Rose Red",h:"#C21E56",c:"red"},{n:"Carmine",h:"#960018",c:"red"},{n:"Scarlet",h:"#FF2400",c:"red"},{n:"Lava",h:"#CF1020",c:"red"},{n:"Persian Red",h:"#CC3333",c:"red"},{n:"Barn Red",h:"#7C0A02",c:"red"},{n:"Apple Red",h:"#FF0800",c:"red"},{n:"Blood Red",h:"#660000",c:"red"},{n:"Brick Red",h:"#CB4154",c:"red"},{n:"Cherry",h:"#DE3163",c:"red"},{n:"Chestnut",h:"#954535",c:"red"},{n:"Cinnabar",h:"#E34234",c:"red"},{n:"Raspberry",h:"#E30B5D",c:"red"},{n:"Redwood",h:"#A45A52",c:"red"},{n:"Cardinal",h:"#C41E3A",c:"red"},{n:"Candy Apple",h:"#FF0800",c:"red"},{n:"Falu Red",h:"#801818",c:"red"},{n:"Fire Engine",h:"#CE2029",c:"red"},{n:"Harvard Crimson",h:"#C90016",c:"red"},{n:"Amaranth Red",h:"#D3212D",c:"red"},{n:"Dark Scarlet",h:"#560319",c:"red"},{n:"English Red",h:"#AB4B52",c:"red"},{n:"Imperial Red",h:"#ED2939",c:"red"},{n:"Jasper",h:"#D73B3E",c:"red"},{n:"Lust",h:"#E62020",c:"red"},{n:"Permanent Geranium",h:"#E12C2C",c:"red"},{n:"Portland Orange",h:"#FF5A36",c:"red"},{n:"Upsdell Red",h:"#AE2029",c:"red"},{n:"Valentine Red",h:"#893843",c:"red"},{n:"Vivid Red",h:"#F70D1A",c:"red"},{n:"Warm Red",h:"#FF3855",c:"red"},{n:"Wine",h:"#722F37",c:"red"},{n:"Tuscan Red",h:"#7C3030",c:"red"},{n:"Rust Red",h:"#AA4444",c:"red"},{n:"Coral",h:"#FF7F50",c:"red"},
+// ORANGES (50)
+{n:"Orange",h:"#FFA500",c:"orange"},{n:"Dark Orange",h:"#FF8C00",c:"orange"},{n:"Orange Red",h:"#FF4500",c:"orange"},{n:"Tangerine",h:"#F28500",c:"orange"},{n:"Amber",h:"#FFBF00",c:"orange"},{n:"Pumpkin",h:"#FF7518",c:"orange"},{n:"Burnt Orange",h:"#CC5500",c:"orange"},{n:"Persimmon",h:"#EC5800",c:"orange"},{n:"Mango",h:"#FF8243",c:"orange"},{n:"Apricot",h:"#FBCEB1",c:"orange"},{n:"Peach",h:"#FFCBA4",c:"orange"},{n:"Sandy Brown",h:"#F4A460",c:"orange"},{n:"Papaya Whip",h:"#FFEFD5",c:"orange"},{n:"Bisque",h:"#FFE4C4",c:"orange"},{n:"Ochre",h:"#CC7722",c:"orange"},{n:"Tiger Orange",h:"#FD7F20",c:"orange"},{n:"Bright Orange",h:"#FF5F1F",c:"orange"},{n:"Cheddar",h:"#FFA62B",c:"orange"},{n:"Clementine",h:"#E96300",c:"orange"},{n:"Creamsicle",h:"#FFB347",c:"orange"},{n:"Deep Carrot",h:"#E9692C",c:"orange"},{n:"Flame",h:"#E25822",c:"orange"},{n:"Gamboge",h:"#E49B0F",c:"orange"},{n:"Marigold",h:"#EAA221",c:"orange"},{n:"Princeton Orange",h:"#FF8F00",c:"orange"},{n:"Vermilion",h:"#E34234",c:"orange"},{n:"Atomic Tangerine",h:"#FF9966",c:"orange"},{n:"Butterscotch",h:"#E3963E",c:"orange"},{n:"Neon Carrot",h:"#FFA343",c:"orange"},{n:"Spanish Orange",h:"#E86100",c:"orange"},{n:"Sunset",h:"#FAD6A5",c:"orange"},{n:"Alloy Orange",h:"#C46210",c:"orange"},{n:"Blaze Orange",h:"#FF6700",c:"orange"},{n:"Bronze Yellow",h:"#737000",c:"orange"},{n:"Cadmium Orange",h:"#ED872D",c:"orange"},{n:"Copper Crayola",h:"#DA8A67",c:"orange"},{n:"Dark Tangerine",h:"#FFA812",c:"orange"},{n:"Deep Saffron",h:"#FF9933",c:"orange"},{n:"Giant's Orange",h:"#FE5A1D",c:"orange"},{n:"Golden Brown",h:"#996515",c:"orange"},{n:"Gold Fusion",h:"#85754E",c:"orange"},{n:"Harvest Gold",h:"#DA9100",c:"orange"},{n:"Hunyadi Yellow",h:"#EFC050",c:"orange"},{n:"International Orange",h:"#FF4F00",c:"orange"},{n:"Melon",h:"#FEBAAD",c:"orange"},{n:"Pastel Orange",h:"#FFB347",c:"orange"},{n:"Raw Sienna",h:"#D68A59",c:"orange"},{n:"Safety Orange",h:"#FF7800",c:"orange"},{n:"Tawny",h:"#CD5700",c:"orange"},{n:"UT Orange",h:"#FF8200",c:"orange"},
+// YELLOWS (50)
+{n:"Yellow",h:"#FFFF00",c:"yellow"},{n:"Gold",h:"#FFD700",c:"yellow"},{n:"Lemon",h:"#FFF44F",c:"yellow"},{n:"Goldenrod",h:"#DAA520",c:"yellow"},{n:"Dark Goldenrod",h:"#B8860B",c:"yellow"},{n:"Khaki",h:"#F0E68C",c:"yellow"},{n:"Dark Khaki",h:"#BDB76B",c:"yellow"},{n:"Banana",h:"#FFE135",c:"yellow"},{n:"Corn Yellow",h:"#FBEC5D",c:"yellow"},{n:"Canary",h:"#FFFF99",c:"yellow"},{n:"Naples Yellow",h:"#FADA5E",c:"yellow"},{n:"Mustard",h:"#FFDB58",c:"yellow"},{n:"Chartreuse Yellow",h:"#DFFF00",c:"yellow"},{n:"Vanilla",h:"#F3E5AB",c:"yellow"},{n:"Aureolin",h:"#FDEE00",c:"yellow"},{n:"Blond",h:"#FAF0BE",c:"yellow"},{n:"Buff",h:"#F0DC82",c:"yellow"},{n:"Butter",h:"#FFFAA0",c:"yellow"},{n:"Citrine",h:"#E4D00A",c:"yellow"},{n:"Cream",h:"#FFFDD0",c:"yellow"},{n:"Daffodil",h:"#FFFF31",c:"yellow"},{n:"Dandelion",h:"#F0E130",c:"yellow"},{n:"Flax",h:"#EEDC82",c:"yellow"},{n:"Hansa Yellow",h:"#E9D66B",c:"yellow"},{n:"Jasmine",h:"#F8DE7E",c:"yellow"},{n:"Jonquil",h:"#F4CA16",c:"yellow"},{n:"Straw",h:"#E4D96F",c:"yellow"},{n:"Saffron",h:"#F4C430",c:"yellow"},{n:"Sunflower",h:"#FFD800",c:"yellow"},{n:"Acid Yellow",h:"#E9FF32",c:"yellow"},{n:"Brass",h:"#B5A642",c:"yellow"},{n:"Chrome Yellow",h:"#FFA700",c:"yellow"},{n:"Golden Yellow",h:"#FFDF00",c:"yellow"},{n:"Mellow Yellow",h:"#F8DE7E",c:"yellow"},{n:"Mikado Yellow",h:"#FFC40C",c:"yellow"},{n:"Old Gold",h:"#CFB53B",c:"yellow"},{n:"Vegas Gold",h:"#C5B358",c:"yellow"},{n:"Lemon Glacier",h:"#FDFF00",c:"yellow"},{n:"Lemon Meringue",h:"#F6EABE",c:"yellow"},{n:"Lemon Yellow",h:"#FFF44F",c:"yellow"},{n:"Maximum Yellow",h:"#FAFA37",c:"yellow"},{n:"Minion Yellow",h:"#F5E642",c:"yellow"},{n:"Nyanza",h:"#E9FFDB",c:"yellow"},{n:"Pastel Yellow",h:"#FDFD96",c:"yellow"},{n:"Royal Yellow",h:"#FA9A00",c:"yellow"},{n:"School Bus Yellow",h:"#FFD800",c:"yellow"},{n:"Selective Yellow",h:"#FFBA00",c:"yellow"},{n:"Solar",h:"#EFA00B",c:"yellow"},{n:"Stil de Grain Yellow",h:"#FADA5E",c:"yellow"},{n:"Titanium Yellow",h:"#EEE600",c:"yellow"},
+// GREENS (100)
+{n:"Green",h:"#008000",c:"green"},{n:"Lime",h:"#00FF00",c:"green"},{n:"Lime Green",h:"#32CD32",c:"green"},{n:"Forest Green",h:"#228B22",c:"green"},{n:"Dark Green",h:"#006400",c:"green"},{n:"Sea Green",h:"#2E8B57",c:"green"},{n:"Medium Sea Green",h:"#3CB371",c:"green"},{n:"Spring Green",h:"#00FF7F",c:"green"},{n:"Medium Spring Green",h:"#00FA9A",c:"green"},{n:"Lawn Green",h:"#7CFC00",c:"green"},{n:"Chartreuse",h:"#7FFF00",c:"green"},{n:"Green Yellow",h:"#ADFF2F",c:"green"},{n:"Yellow Green",h:"#9ACD32",c:"green"},{n:"Olive",h:"#808000",c:"green"},{n:"Olive Drab",h:"#6B8E23",c:"green"},{n:"Dark Olive Green",h:"#556B2F",c:"green"},{n:"Pale Green",h:"#98FB98",c:"green"},{n:"Light Green",h:"#90EE90",c:"green"},{n:"Mint Green",h:"#98FF98",c:"green"},{n:"Emerald",h:"#50C878",c:"green"},{n:"Jade",h:"#00A86B",c:"green"},{n:"Teal Green",h:"#00827F",c:"green"},{n:"Sage Green",h:"#8FBC8F",c:"green"},{n:"Fern Green",h:"#4F7942",c:"green"},{n:"Hunter Green",h:"#355E3B",c:"green"},{n:"Artichoke",h:"#8F9779",c:"green"},{n:"Asparagus",h:"#87A96B",c:"green"},{n:"Avocado",h:"#568203",c:"green"},{n:"Bottle Green",h:"#006A4E",c:"green"},{n:"Brunswick Green",h:"#1B4D3E",c:"green"},{n:"Cadmium Green",h:"#006B3C",c:"green"},{n:"Celadon",h:"#ACE1AF",c:"green"},{n:"Hooker's Green",h:"#49796B",c:"green"},{n:"Irish Green",h:"#009A44",c:"green"},{n:"Kelly Green",h:"#4CBB17",c:"green"},{n:"Malachite",h:"#0BDA51",c:"green"},{n:"Moss Green",h:"#8A9A5B",c:"green"},{n:"Mountain Meadow",h:"#30BA8F",c:"green"},{n:"Pine Green",h:"#01796F",c:"green"},{n:"Pistachio",h:"#93C572",c:"green"},{n:"Shamrock",h:"#45CEA2",c:"green"},{n:"Viridian",h:"#40826D",c:"green"},{n:"Zomp",h:"#39A78E",c:"green"},{n:"Persian Green",h:"#00A693",c:"green"},{n:"Jungle Green",h:"#29AB87",c:"green"},{n:"Caribbean Green",h:"#00CC99",c:"green"},{n:"Seafoam",h:"#71EEB8",c:"green"},{n:"Teal Deer",h:"#99E6B3",c:"green"},{n:"Neon Green",h:"#39FF14",c:"green"},{n:"Apple Green",h:"#8DB600",c:"green"},{n:"Bangladesh Green",h:"#006A4E",c:"green"},{n:"British Racing",h:"#004225",c:"green"},{n:"Dartmouth Green",h:"#00703C",c:"green"},{n:"Laurel Green",h:"#A9BA9D",c:"green"},{n:"Mantis",h:"#74C365",c:"green"},{n:"Aquamarine",h:"#7FFFD4",c:"green"},{n:"Medium Aquamarine",h:"#66CDAA",c:"green"},{n:"Mint Cream",h:"#9FE2BF",c:"green"},{n:"Turquoise Green",h:"#A0D6B4",c:"green"},{n:"Electric Green",h:"#00FF00",c:"green"},{n:"Delhi Green",h:"#22640D",c:"green"},{n:"Amazon Green",h:"#3B7A57",c:"green"},{n:"Ao English",h:"#008000",c:"green"},{n:"Bitter Lime",h:"#BFFF00",c:"green"},{n:"Camouflage Green",h:"#78866B",c:"green"},{n:"Castleton Green",h:"#00563B",c:"green"},{n:"Chrome Green",h:"#1A6B3C",c:"green"},{n:"Crayola Green",h:"#1CAC78",c:"green"},{n:"Dark Cyan",h:"#008B8B",c:"green"},{n:"Dark Moss Green",h:"#4A5240",c:"green"},{n:"Erin",h:"#00FF40",c:"green"},{n:"GO Green",h:"#00AB66",c:"green"},{n:"Granny Smith Apple",h:"#A8E4A0",c:"green"},{n:"Green Munsell",h:"#00A877",c:"green"},{n:"Green NCS",h:"#009F6B",c:"green"},{n:"Green Pigment",h:"#00A550",c:"green"},{n:"Harlequin",h:"#3FFF00",c:"green"},{n:"Inchworm",h:"#B2EC5D",c:"green"},{n:"India Green",h:"#138808",c:"green"},{n:"Islamic Green",h:"#009000",c:"green"},{n:"Japanese Laurel",h:"#2E8B57",c:"green"},{n:"June Bud",h:"#BDDA57",c:"green"},{n:"Kiwi",h:"#8EE53F",c:"green"},{n:"Kombu Green",h:"#354230",c:"green"},{n:"Las Vegas Green",h:"#218559",c:"green"},{n:"Malachite Green",h:"#0BDA51",c:"green"},{n:"Maximum Green",h:"#5E8C31",c:"green"},{n:"Midori",h:"#2E8B57",c:"green"},{n:"Middle Green",h:"#4D8C57",c:"green"},{n:"Mint",h:"#3EB489",c:"green"},{n:"Myrtle Green",h:"#317873",c:"green"},{n:"Pakistan Green",h:"#006600",c:"green"},{n:"Paris Green",h:"#50C878",c:"green"},{n:"Patina Green",h:"#4D9B8A",c:"green"},{n:"Phthalo Green",h:"#123524",c:"green"},{n:"Rifle Green",h:"#444C38",c:"green"},{n:"SAE Green",h:"#009A44",c:"green"},{n:"Screamin Green",h:"#76FF7A",c:"green"},
+// BLUES (100)
+{n:"Blue",h:"#0000FF",c:"blue"},{n:"Navy",h:"#000080",c:"blue"},{n:"Dark Blue",h:"#00008B",c:"blue"},{n:"Medium Blue",h:"#0000CD",c:"blue"},{n:"Royal Blue",h:"#4169E1",c:"blue"},{n:"Cobalt Blue",h:"#0047AB",c:"blue"},{n:"Cornflower Blue",h:"#6495ED",c:"blue"},{n:"Sky Blue",h:"#87CEEB",c:"blue"},{n:"Light Sky Blue",h:"#87CEFA",c:"blue"},{n:"Deep Sky Blue",h:"#00BFFF",c:"blue"},{n:"Dodger Blue",h:"#1E90FF",c:"blue"},{n:"Steel Blue",h:"#4682B4",c:"blue"},{n:"Light Steel Blue",h:"#B0C4DE",c:"blue"},{n:"Powder Blue",h:"#B0E0E6",c:"blue"},{n:"Light Blue",h:"#ADD8E6",c:"blue"},{n:"Cadet Blue",h:"#5F9EA0",c:"blue"},{n:"Teal",h:"#008080",c:"blue"},{n:"Cyan",h:"#00FFFF",c:"blue"},{n:"Aqua",h:"#00FFFF",c:"blue"},{n:"Turquoise",h:"#40E0D0",c:"blue"},{n:"Medium Turquoise",h:"#48D1CC",c:"blue"},{n:"Dark Turquoise",h:"#00CED1",c:"blue"},{n:"Electric Blue",h:"#7DF9FF",c:"blue"},{n:"Cerulean",h:"#007BA7",c:"blue"},{n:"Azure",h:"#007FFF",c:"blue"},{n:"Sapphire",h:"#0F52BA",c:"blue"},{n:"Periwinkle",h:"#CCCCFF",c:"blue"},{n:"Baby Blue",h:"#89CFF0",c:"blue"},{n:"Air Force Blue",h:"#5D8AA8",c:"blue"},{n:"Alice Blue",h:"#F0F8FF",c:"blue"},{n:"Aquamarine Blue",h:"#7FFFD4",c:"blue"},{n:"Bleu de France",h:"#318CE7",c:"blue"},{n:"Blue Bell",h:"#A2A2D0",c:"blue"},{n:"Blue Gray",h:"#6699CC",c:"blue"},{n:"Bondi Blue",h:"#0095B6",c:"blue"},{n:"Columbia Blue",h:"#C4D8E2",c:"blue"},{n:"Denim",h:"#1560BD",c:"blue"},{n:"Egyptian Blue",h:"#1034A6",c:"blue"},{n:"Federal Blue",h:"#062A78",c:"blue"},{n:"Glaucous",h:"#6082B6",c:"blue"},{n:"Han Blue",h:"#446CCF",c:"blue"},{n:"Lapis Lazuli",h:"#26619C",c:"blue"},{n:"Midnight Blue",h:"#191970",c:"blue"},{n:"Pacific Blue",h:"#1CA9C9",c:"blue"},{n:"Prussian Blue",h:"#003153",c:"blue"},{n:"Tiffany Blue",h:"#0ABAB5",c:"blue"},{n:"Robin Egg Blue",h:"#00CCCC",c:"blue"},{n:"Vivid Sky Blue",h:"#00CCFF",c:"blue"},{n:"Vivid Cerulean",h:"#00AAEE",c:"blue"},{n:"Teal Blue",h:"#367588",c:"blue"},{n:"Dark Teal",h:"#003333",c:"blue"},{n:"Cyan Azure",h:"#4E82B4",c:"blue"},{n:"Ice Blue",h:"#D6ECFF",c:"blue"},{n:"Neon Blue",h:"#4D4DFF",c:"blue"},{n:"UCLA Blue",h:"#536895",c:"blue"},{n:"Independence",h:"#4C516D",c:"blue"},{n:"Indigo Dye",h:"#00416A",c:"blue"},{n:"Viridian Blue",h:"#0F5F98",c:"blue"},{n:"Dark Cyan",h:"#008B8B",c:"blue"},{n:"Teal Dark",h:"#008080",c:"blue"},{n:"Aero Blue",h:"#C9FFE5",c:"blue"},{n:"Argentinian Blue",h:"#6CB4E4",c:"blue"},{n:"Baby Blue Eyes",h:"#A1CAF1",c:"blue"},{n:"Beau Blue",h:"#BCD4E6",c:"blue"},{n:"Blue Jeans",h:"#5DADEC",c:"blue"},{n:"Blue Munsell",h:"#0093AF",c:"blue"},{n:"Blue NCS",h:"#0087BD",c:"blue"},{n:"Blue Pigment",h:"#333399",c:"blue"},{n:"Blue Sapphire",h:"#126180",c:"blue"},{n:"Blue Yonder",h:"#5072A7",c:"blue"},{n:"Brandeis Blue",h:"#0070FF",c:"blue"},{n:"Carolina Blue",h:"#56A0D3",c:"blue"},{n:"Celeste",h:"#B2FFFF",c:"blue"},{n:"Cerulean Blue",h:"#2A52BE",c:"blue"},{n:"Cerulean Frost",h:"#6D9BC3",c:"blue"},{n:"CG Blue",h:"#007AA5",c:"blue"},{n:"Dark Cornflower",h:"#26428B",c:"blue"},{n:"Dark Powder Blue",h:"#003399",c:"blue"},{n:"Dark Sky Blue",h:"#8CBED6",c:"blue"},{n:"Dark Slate Blue",h:"#483D8B",c:"blue"},{n:"Duke Blue",h:"#00009C",c:"blue"},{n:"Fluorescent Blue",h:"#15F4EE",c:"blue"},{n:"French Blue",h:"#0072BB",c:"blue"},{n:"Frenchman Blue",h:"#6D9BC3",c:"blue"},{n:"Iris Blue",h:"#5A4FCF",c:"blue"},{n:"Klein Blue",h:"#002FA7",c:"blue"},{n:"Light Cobalt Blue",h:"#88ACE0",c:"blue"},{n:"Light Cornflower",h:"#93CCEA",c:"blue"},{n:"Liberty",h:"#545AA7",c:"blue"},{n:"Livid",h:"#6699CC",c:"blue"},{n:"Majorelle Blue",h:"#6050DC",c:"blue"},{n:"Medium Slate Blue",h:"#7B68EE",c:"blue"},{n:"Muted Blue",h:"#6495ED",c:"blue"},{n:"Non Photo Blue",h:"#A4DDED",c:"blue"},{n:"Ocean Blue",h:"#4F42B5",c:"blue"},{n:"Olympic Blue",h:"#008ECC",c:"blue"},{n:"Palatinate Blue",h:"#273BE2",c:"blue"},{n:"Persian Blue",h:"#1C39BB",c:"blue"},{n:"Phthalo Blue",h:"#000F89",c:"blue"},{n:"Polynesian Blue",h:"#044A7A",c:"blue"},
+// PURPLES (60)
+{n:"Purple",h:"#800080",c:"purple"},{n:"Dark Purple",h:"#301934",c:"purple"},{n:"Medium Purple",h:"#9370DB",c:"purple"},{n:"Dark Magenta",h:"#8B008B",c:"purple"},{n:"Dark Violet",h:"#9400D3",c:"purple"},{n:"Violet",h:"#EE82EE",c:"purple"},{n:"Indigo",h:"#4B0082",c:"purple"},{n:"Blue Violet",h:"#8A2BE2",c:"purple"},{n:"Rebecca Purple",h:"#663399",c:"purple"},{n:"Plum",h:"#DDA0DD",c:"purple"},{n:"Thistle",h:"#D8BFD8",c:"purple"},{n:"Lavender",h:"#E6E6FA",c:"purple"},{n:"Orchid",h:"#DA70D6",c:"purple"},{n:"Medium Orchid",h:"#BA55D3",c:"purple"},{n:"Amethyst",h:"#9966CC",c:"purple"},{n:"Mauve",h:"#E0B0FF",c:"purple"},{n:"Wisteria",h:"#C9A0DC",c:"purple"},{n:"Grape",h:"#6F2DA8",c:"purple"},{n:"Byzantium",h:"#702963",c:"purple"},{n:"Heliotrope",h:"#DF73FF",c:"purple"},{n:"African Violet",h:"#B284BE",c:"purple"},{n:"Byzantine",h:"#BD33A4",c:"purple"},{n:"Clematis",h:"#4C2882",c:"purple"},{n:"Dark Byzantium",h:"#5D3954",c:"purple"},{n:"Dark Lavender",h:"#734F96",c:"purple"},{n:"Eggplant",h:"#614051",c:"purple"},{n:"Floral Lavender",h:"#B57EDC",c:"purple"},{n:"Iris",h:"#5A4FCF",c:"purple"},{n:"Lilac",h:"#C8A2C8",c:"purple"},{n:"Mulberry",h:"#C54B8C",c:"purple"},{n:"Palatinate",h:"#682860",c:"purple"},{n:"Ultra Violet",h:"#5F4B8B",c:"purple"},{n:"Neon Purple",h:"#BF00FF",c:"purple"},{n:"Vivid Violet",h:"#9F00FF",c:"purple"},{n:"Pale Purple",h:"#FAE6FA",c:"purple"},{n:"Eminence",h:"#6C3082",c:"purple"},{n:"Fandango",h:"#B53389",c:"purple"},{n:"French Lilac",h:"#86608E",c:"purple"},{n:"French Violet",h:"#8806CE",c:"purple"},{n:"Glossy Grape",h:"#AB92B3",c:"purple"},{n:"Grape Purple",h:"#4A235A",c:"purple"},{n:"Grullo",h:"#A99A86",c:"purple"},{n:"Han Purple",h:"#5218FA",c:"purple"},{n:"Jazzberry Jam",h:"#A50B5E",c:"purple"},{n:"Kobi",h:"#E79FC4",c:"purple"},{n:"Lavender Indigo",h:"#9457EB",c:"purple"},{n:"Lavender Purple",h:"#967BB6",c:"purple"},{n:"Liseran Purple",h:"#DE6FA1",c:"purple"},{n:"Magenta Dye",h:"#CA1F7B",c:"purple"},{n:"Maximum Purple",h:"#733380",c:"purple"},{n:"Mauve Taupe",h:"#915F6D",c:"purple"},{n:"Medium Lavender",h:"#DDA0DD",c:"purple"},{n:"Mimi Pink",h:"#FFDAE9",c:"purple"},{n:"Misty Lavender",h:"#D1BEE4",c:"purple"},{n:"Mode Beige",h:"#967117",c:"purple"},{n:"Nadeshiko Pink",h:"#F6ADC6",c:"purple"},{n:"Old Heliotrope",h:"#563C5C",c:"purple"},{n:"Old Lavender",h:"#796878",c:"purple"},{n:"Phlox",h:"#DF00FF",c:"purple"},{n:"Thistle Purple",h:"#D8BFD8",c:"purple"},
+// PINKS (50)
+{n:"Pink",h:"#FFC0CB",c:"pink"},{n:"Light Pink",h:"#FFB6C1",c:"pink"},{n:"Hot Pink",h:"#FF69B4",c:"pink"},{n:"Deep Pink",h:"#FF1493",c:"pink"},{n:"Medium Violet Red",h:"#C71585",c:"pink"},{n:"Pale Violet Red",h:"#DB7093",c:"pink"},{n:"Rose",h:"#FF007F",c:"pink"},{n:"Magenta",h:"#FF00FF",c:"pink"},{n:"Fuchsia",h:"#FF77FF",c:"pink"},{n:"Carnation Pink",h:"#FFA6C9",c:"pink"},{n:"Flamingo",h:"#FC8EAC",c:"pink"},{n:"Blush",h:"#DE5D83",c:"pink"},{n:"Bubblegum",h:"#FF85A2",c:"pink"},{n:"Shocking Pink",h:"#FC0FC0",c:"pink"},{n:"Cerise",h:"#DE3163",c:"pink"},{n:"Ultra Pink",h:"#FF6FFF",c:"pink"},{n:"Lavender Blush",h:"#FFF0F5",c:"pink"},{n:"Baker-Miller Pink",h:"#FF91AF",c:"pink"},{n:"Barbie Pink",h:"#E0218A",c:"pink"},{n:"Brink Pink",h:"#FB607F",c:"pink"},{n:"Candy Pink",h:"#E4717A",c:"pink"},{n:"China Pink",h:"#DE6FA1",c:"pink"},{n:"Classic Rose",h:"#FBCCE7",c:"pink"},{n:"Coral Pink",h:"#F88379",c:"pink"},{n:"Cotton Candy",h:"#FFBCD9",c:"pink"},{n:"Cyclamen",h:"#F56FA1",c:"pink"},{n:"Fairy Tale",h:"#F2C1D1",c:"pink"},{n:"French Rose",h:"#F64A8A",c:"pink"},{n:"Orchid Pink",h:"#F2BDCD",c:"pink"},{n:"Pastel Pink",h:"#FFD1DC",c:"pink"},{n:"Persian Rose",h:"#FE28A2",c:"pink"},{n:"Thulian Pink",h:"#DE6FA1",c:"pink"},{n:"Amaranth Pink",h:"#F19CBB",c:"pink"},{n:"Neon Pink",h:"#FF6EC7",c:"pink"},{n:"Rose Quartz",h:"#AA98A9",c:"pink"},{n:"Tickle Me Pink",h:"#FC89AC",c:"pink"},{n:"Charm Pink",h:"#E68FAC",c:"pink"},{n:"Cameo Pink",h:"#EFBBCC",c:"pink"},{n:"Carnelian",h:"#B31B1B",c:"pink"},{n:"Deep Rose",h:"#D44B6A",c:"pink"},{n:"Dogwood Rose",h:"#D71868",c:"pink"},{n:"Dust Storm",h:"#E5CCC9",c:"pink"},{n:"Fondant",h:"#F2BDCD",c:"pink"},{n:"Frenchman Rose",h:"#F64A8A",c:"pink"},{n:"Lavender Rose",h:"#FBA0E3",c:"pink"},{n:"Love Pink",h:"#FB9EC6",c:"pink"},{n:"Misty Rose",h:"#FFE4E1",c:"pink"},{n:"Pale Dogwood",h:"#ED7966",c:"pink"},{n:"Piggy Pink",h:"#FDDDE6",c:"pink"},{n:"Princess Pink",h:"#FF69B4",c:"pink"},
+// BROWNS (60)
+{n:"Brown",h:"#A52A2A",c:"brown"},{n:"Saddle Brown",h:"#8B4513",c:"brown"},{n:"Sienna",h:"#A0522D",c:"brown"},{n:"Peru",h:"#CD853F",c:"brown"},{n:"Chocolate",h:"#D2691E",c:"brown"},{n:"Tan",h:"#D2B48C",c:"brown"},{n:"Burlywood",h:"#DEB887",c:"brown"},{n:"Wheat",h:"#F5DEB3",c:"brown"},{n:"Moccasin",h:"#FFE4B5",c:"brown"},{n:"Navajo White",h:"#FFDEAD",c:"brown"},{n:"Blanched Almond",h:"#FFEBCD",c:"brown"},{n:"Sepia",h:"#704214",c:"brown"},{n:"Caramel",h:"#C68642",c:"brown"},{n:"Coffee",h:"#6F4E37",c:"brown"},{n:"Cinnamon",h:"#D2691E",c:"brown"},{n:"Almond",h:"#EFDECD",c:"brown"},{n:"Auburn",h:"#A52A2A",c:"brown"},{n:"Beaver",h:"#9F8170",c:"brown"},{n:"Bole",h:"#79443B",c:"brown"},{n:"Bronze",h:"#CD7F32",c:"brown"},{n:"Burnt Sienna",h:"#E97451",c:"brown"},{n:"Burnt Umber",h:"#8A3324",c:"brown"},{n:"Caput Mortuum",h:"#592720",c:"brown"},{n:"Coconut",h:"#965A3E",c:"brown"},{n:"Dark Brown",h:"#654321",c:"brown"},{n:"Desert",h:"#C19A6B",c:"brown"},{n:"Dirt",h:"#9B7653",c:"brown"},{n:"Earth Yellow",h:"#E1A95F",c:"brown"},{n:"Ecru",h:"#C2B280",c:"brown"},{n:"Fallow",h:"#C19A6B",c:"brown"},{n:"Fulvous",h:"#E48400",c:"brown"},{n:"Liver",h:"#674C47",c:"brown"},{n:"Nougat",h:"#C78540",c:"brown"},{n:"Russet",h:"#80461B",c:"brown"},{n:"Copper",h:"#B87333",c:"brown"},{n:"Rust",h:"#B7410E",c:"brown"},{n:"Walnut",h:"#773F1A",c:"brown"},{n:"Antique Bronze",h:"#665D1E",c:"brown"},{n:"Bistre",h:"#3D2B1F",c:"brown"},{n:"Bracken",h:"#4A3728",c:"brown"},{n:"Brick",h:"#CB4154",c:"brown"},{n:"Brindille",h:"#7A4426",c:"brown"},{n:"Chamoisee",h:"#A0785A",c:"brown"},{n:"Cinnamon Satin",h:"#CD607E",c:"brown"},{n:"Clay",h:"#9E5B40",c:"brown"},{n:"Dark Lava",h:"#483C32",c:"brown"},{n:"Dark Tan",h:"#918151",c:"brown"},{n:"Dark Wood",h:"#855E42",c:"brown"},{n:"Deer",h:"#BA8759",c:"brown"},{n:"Dun",h:"#C8AD7F",c:"brown"},{n:"Field Drab",h:"#6C541E",c:"brown"},{n:"Fuzzy Wuzzy",h:"#CC6666",c:"brown"},{n:"Ginger",h:"#B06500",c:"brown"},{n:"Hookworm",h:"#AA6C39",c:"brown"},{n:"Khaki Brown",h:"#C3B091",c:"brown"},{n:"Leather",h:"#967117",c:"brown"},{n:"Lion",h:"#C19A6B",c:"brown"},{n:"Medium Brown",h:"#7B3F00",c:"brown"},{n:"Pale Brown",h:"#987654",c:"brown"},{n:"Roasted Coffee",h:"#704241",c:"brown"},
+// GRAYS (40)
+{n:"Gray",h:"#808080",c:"gray"},{n:"Light Gray",h:"#D3D3D3",c:"gray"},{n:"Dark Gray",h:"#A9A9A9",c:"gray"},{n:"Dim Gray",h:"#696969",c:"gray"},{n:"Silver",h:"#C0C0C0",c:"gray"},{n:"Gainsboro",h:"#DCDCDC",c:"gray"},{n:"Slate Gray",h:"#708090",c:"gray"},{n:"Light Slate Gray",h:"#778899",c:"gray"},{n:"Dark Slate Gray",h:"#2F4F4F",c:"gray"},{n:"Charcoal",h:"#36454F",c:"gray"},{n:"Ash Gray",h:"#B2BEB5",c:"gray"},{n:"Battleship Gray",h:"#848482",c:"gray"},{n:"Pewter",h:"#96A8A1",c:"gray"},{n:"Platinum",h:"#E5E4E2",c:"gray"},{n:"Smoke",h:"#738276",c:"gray"},{n:"Stone",h:"#928E85",c:"gray"},{n:"Cadet Gray",h:"#91A3B0",c:"gray"},{n:"Cool Gray",h:"#8C92AC",c:"gray"},{n:"Davy's Gray",h:"#555555",c:"gray"},{n:"Feldgrau",h:"#4D5D53",c:"gray"},{n:"French Gray",h:"#BDBDC6",c:"gray"},{n:"Granite",h:"#676767",c:"gray"},{n:"Gunmetal",h:"#2A3439",c:"gray"},{n:"Marengo",h:"#4C5866",c:"gray"},{n:"Outer Space",h:"#414A4C",c:"gray"},{n:"Roman Silver",h:"#838996",c:"gray"},{n:"Shadow",h:"#8A795D",c:"gray"},{n:"Taupe Gray",h:"#8B8589",c:"gray"},{n:"Nickel",h:"#727472",c:"gray"},{n:"Iron",h:"#A19D94",c:"gray"},{n:"Lead",h:"#212121",c:"gray"},{n:"Anchor Gray",h:"#878787",c:"gray"},{n:"Cement",h:"#8D8D8D",c:"gray"},{n:"Cinereous",h:"#98817B",c:"gray"},{n:"Glaucous Gray",h:"#6082B6",c:"gray"},{n:"Pale Silver",h:"#C9C0BB",c:"gray"},{n:"Puce",h:"#CC8899",c:"gray"},{n:"Rhythm",h:"#777696",c:"gray"},{n:"Sonic Silver",h:"#757575",c:"gray"},{n:"Spanish Gray",h:"#989898",c:"gray"},
+// WHITES (30)
+{n:"White",h:"#FFFFFF",c:"white"},{n:"Snow",h:"#FFFAFA",c:"white"},{n:"Honeydew",h:"#F0FFF0",c:"white"},{n:"Mint Cream",h:"#F5FFFA",c:"white"},{n:"Azure White",h:"#F0FFFF",c:"white"},{n:"Ghost White",h:"#F8F8FF",c:"white"},{n:"Seashell",h:"#FFF5EE",c:"white"},{n:"Beige",h:"#F5F5DC",c:"white"},{n:"Floral White",h:"#FFFAF0",c:"white"},{n:"Ivory",h:"#FFFFF0",c:"white"},{n:"Old Lace",h:"#FDF5E6",c:"white"},{n:"Linen",h:"#FAF0E6",c:"white"},{n:"Antique White",h:"#FAEBD7",c:"white"},{n:"Cornsilk",h:"#FFF8DC",c:"white"},{n:"Light Yellow",h:"#FFFFE0",c:"white"},{n:"Baby Powder",h:"#FEFEFA",c:"white"},{n:"Dutch White",h:"#EFDFBB",c:"white"},{n:"Eggshell",h:"#F0EAD6",c:"white"},{n:"Isabelline",h:"#F4F0EC",c:"white"},{n:"Magnolia",h:"#F8F4FF",c:"white"},{n:"Pearl",h:"#EAE0C8",c:"white"},{n:"Cosmic Latte",h:"#FFF8E7",c:"white"},{n:"Champagne",h:"#F7E7CE",c:"white"},{n:"Cream White",h:"#FFFDD0",c:"white"},{n:"Alabaster",h:"#F2F0EB",c:"white"},{n:"Bone",h:"#E3DAC9",c:"white"},{n:"Cultured",h:"#F5F5F5",c:"white"},{n:"Lotion",h:"#FEFDFA",c:"white"},{n:"Parchment",h:"#F1E9D2",c:"white"},{n:"White Smoke",h:"#F5F5F5",c:"white"},
+// BLACKS (25)
+{n:"Black",h:"#000000",c:"black"},{n:"Jet Black",h:"#0A0A0A",c:"black"},{n:"Rich Black",h:"#010203",c:"black"},{n:"Onyx",h:"#353839",c:"black"},{n:"Licorice",h:"#1A1110",c:"black"},{n:"Eerie Black",h:"#1B1B1B",c:"black"},{n:"Raisin Black",h:"#242124",c:"black"},{n:"Dark Charcoal",h:"#333333",c:"black"},{n:"Night",h:"#0D0D0D",c:"black"},{n:"Dark Jungle",h:"#1A2421",c:"black"},{n:"Charleston Green",h:"#232B2B",c:"black"},{n:"Chinese Black",h:"#141414",c:"black"},{n:"Ebony",h:"#555D50",c:"black"},{n:"Obsidian",h:"#1B1811",c:"black"},{n:"Seal Brown",h:"#321414",c:"black"},{n:"Xiketic",h:"#052535",c:"black"},{n:"Ink",h:"#1F1F1F",c:"black"},{n:"Nero",h:"#252525",c:"black"},{n:"Oil Black",h:"#0C0C0C",c:"black"},{n:"Smoky Black",h:"#100C08",c:"black"},{n:"Space Black",h:"#0D0208",c:"black"},{n:"Vampire Black",h:"#080808",c:"black"},{n:"Cool Black",h:"#002E63",c:"black"},{n:"Matte Black",h:"#28282B",c:"black"},{n:"Outer Space",h:"#414A4C",c:"black"},
+// SPECIAL / METALLIC / NEONS
+{n:"Gold Metallic",h:"#D4AF37",c:"yellow"},{n:"Rose Gold",h:"#B76E79",c:"pink"},{n:"Silver Metallic",h:"#AAA9AD",c:"gray"},{n:"Copper Metallic",h:"#AD6F69",c:"brown"},{n:"Neon Green",h:"#39FF14",c:"green"},{n:"Neon Pink",h:"#FF6EC7",c:"pink"},{n:"Neon Orange",h:"#FF6700",c:"orange"},{n:"Neon Red",h:"#FF3131",c:"red"},{n:"Neon Cyan",h:"#00FFEF",c:"blue"},{n:"Electric Purple",h:"#BF00FF",c:"purple"},{n:"Vivid Orange",h:"#FF5F00",c:"orange"},{n:"Vivid Red",h:"#F70D1A",c:"red"},{n:"Laser Lemon",h:"#FEFE22",c:"yellow"},{n:"Shocking Green",h:"#8FFB8F",c:"green"},{n:"Pastel Blue",h:"#AEC6CF",c:"blue"},{n:"Pastel Green",h:"#77DD77",c:"green"},{n:"Pastel Violet",h:"#CB99C9",c:"purple"},{n:"Pastel Mint",h:"#98FF98",c:"green"},{n:"Pastel Cyan",h:"#87D3F8",c:"blue"},{n:"Pale Cornflower",h:"#ABCDEF",c:"blue"},{n:"Pale Lavender",h:"#DCD0FF",c:"purple"},{n:"Periwinkle Pastel",h:"#CCCCFF",c:"blue"},{n:"Sky Pastel",h:"#C9E8F5",c:"blue"},{n:"Sage Pastel",h:"#BCB88A",c:"green"},{n:"Blush Pastel",h:"#F9DDD9",c:"pink"},{n:"Cotton Pastel",h:"#F5F0F0",c:"white"},{n:"Cameo",h:"#EFBBCC",c:"pink"},{n:"Celeste",h:"#B2FFFF",c:"blue"},{n:"Champagne Gold",h:"#FAD5A5",c:"yellow"},{n:"Coquelicot",h:"#FF3800",c:"red"},{n:"Dark Aquamarine",h:"#009B77",c:"green"},{n:"Dark Chartreuse",h:"#007F00",c:"green"},{n:"Flirt",h:"#A2006D",c:"pink"},{n:"Languid Lavender",h:"#D6CADD",c:"purple"},{n:"Magic Mint",h:"#AAF0D1",c:"green"},{n:"Melon",h:"#FEBAAD",c:"orange"},{n:"Midnight Green",h:"#004953",c:"green"},{n:"Moonstone",h:"#3AA8C1",c:"blue"},{n:"Morning Blue",h:"#8DA399",c:"blue"},{n:"Moss",h:"#8A9A5B",c:"green"},{n:"Muted Green",h:"#5A7A61",c:"green"},{n:"Pale Aqua",h:"#BCD4E6",c:"blue"},{n:"Pale Cerulean",h:"#9BC4E2",c:"blue"},{n:"Pale Chestnut",h:"#DDADAF",c:"brown"},{n:"Pale Cyan",h:"#87D3F8",c:"blue"},{n:"Pale Gold",h:"#E6BE8A",c:"yellow"},{n:"Pale Magenta",h:"#F984E5",c:"pink"},{n:"Pale Pink",h:"#FADADD",c:"pink"},{n:"Pale Plum",h:"#DDA0DD",c:"purple"},{n:"Pale Taupe",h:"#BC987E",c:"brown"},{n:"Pale Yellow",h:"#FFFF99",c:"yellow"},
+];
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function hexToRgb(hex){
+  hex=hex.replace('#','');
+  if(hex.length===3) hex=hex.split('').map(x=>x+x).join('');
+  return{r:parseInt(hex.slice(0,2),16),g:parseInt(hex.slice(2,4),16),b:parseInt(hex.slice(4,6),16)};
+}
+function rgbToHex(r,g,b){return'#'+[r,g,b].map(x=>Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join('').toUpperCase();}
+function rgbStr(hex){const{r,g,b}=hexToRgb(hex);return`rgb(${r}, ${g}, ${b})`;}
+function hslStr(hex){
+  let{r,g,b}=hexToRgb(hex);r/=255;g/=255;b/=255;
+  const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,s,l=(mx+mn)/2;
+  if(mx===mn){h=s=0;}else{const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}}
+  return`hsl(${Math.round(h*360)}°, ${Math.round(s*100)}%, ${Math.round(l*100)}%)`;
+}
+function cmykStr(hex){
+  let{r,g,b}=hexToRgb(hex);r/=255;g/=255;b/=255;
+  const k=1-Math.max(r,g,b);if(k===1)return'cmyk(0%,0%,0%,100%)';
+  return`cmyk(${Math.round(((1-r-k)/(1-k))*100)}%,${Math.round(((1-g-k)/(1-k))*100)}%,${Math.round(((1-b-k)/(1-k))*100)}%,${Math.round(k*100)}%)`;
+}
+function lum(hex){const{r,g,b}=hexToRgb(hex);return(0.299*r+0.587*g+0.114*b)/255;}
+function tc(hex){return lum(hex)>0.55?'rgba(0,0,0,0.82)':'rgba(255,255,255,0.92)';}
+function blendColors(hexA,hexB,ratio){
+  const a=hexToRgb(hexA),b=hexToRgb(hexB),t=ratio/100;
+  return rgbToHex(a.r+(b.r-a.r)*t,a.g+(b.g-a.g)*t,a.b+(b.b-a.b)*t);
+}
+function closestName(hex){
+  const{r,g,b}=hexToRgb(hex);
+  let best=C[0],bestD=Infinity;
+  C.forEach(x=>{const rr=hexToRgb(x.h);const d=Math.abs(rr.r-r)+Math.abs(rr.g-g)+Math.abs(rr.b-b);if(d<bestD){bestD=d;best=x;}});
+  return best.n;
+}
+
+// ═══════════════════════════════════════════════════════
+// EXPLORER STATE
+// ═══════════════════════════════════════════════════════
+let favs=JSON.parse(localStorage.getItem('chr3_favs')||'[]');
+let fil='all',vw='grid',qry='',mHex=null;
+const CAT_DOT={red:'#E53E3E',orange:'#ED8936',yellow:'#D69E2E',green:'#38A169',blue:'#3182CE',purple:'#805AD5',pink:'#D53F8C',brown:'#744210',gray:'#718096',white:'#CBD5E0',black:'#2D3748'};
+const CAT_LBL={all:'All Colors',red:'Reds',orange:'Oranges',yellow:'Yellows',green:'Greens',blue:'Blues',purple:'Purples',pink:'Pinks',brown:'Browns',gray:'Grays',white:'Whites',black:'Blacks',favorites:'★ Saved'};
+
+function getList(){
+  let l=C;
+  if(fil==='favorites')l=l.filter(x=>favs.includes(x.h));
+  else if(fil!=='all')l=l.filter(x=>x.c===fil);
+  if(qry){const q=qry.toLowerCase();l=l.filter(x=>x.n.toLowerCase().includes(q)||x.h.toLowerCase().includes(q)||rgbStr(x.h).toLowerCase().includes(q)||hslStr(x.h).toLowerCase().includes(q)||x.c.includes(q));}
+  return l;
+}
+
+function render(){
+  const list=getList();
+  document.getElementById('totalBadge').textContent=C.length+' colors';
+  document.getElementById('resCnt').textContent=`Showing ${list.length} of ${C.length} colors`;
+  const ct=document.getElementById('cont');
+  if(!list.length){ct.innerHTML='<div class="empty"><div class="empty-icon">🎨</div><h3>No colors found</h3><p>Try a different search or filter.</p></div>';return;}
+  const g={};list.forEach(x=>{if(!g[x.c])g[x.c]=[];g[x.c].push(x);});
+  let html='';
+  Object.keys(g).forEach(cat=>{
+    html+=`<div class="sec-hd"><span style="width:10px;height:10px;border-radius:50%;background:${CAT_DOT[cat]||'#999'};display:inline-block;flex-shrink:0"></span>${CAT_LBL[cat]||cat}<span class="seccnt">${g[cat].length}</span></div><div class="cgrid${vw==='list'?' list':''}">`;
+    g[cat].forEach((x,i)=>{
+      const faved=favs.includes(x.h),d=(i%16)*18;
+      if(vw==='list'){
+        html+=`<div class="card lc" style="animation-delay:${d}ms" onclick="openModal('${x.h}')"><div class="sw" style="background:${x.h}"></div><div class="cbody"><div class="cname">${x.n}</div><div class="lcds"><span class="ltag" onclick="event.stopPropagation();copy('${x.h}')">${x.h}</span><span class="ltag" onclick="event.stopPropagation();copy('${rgbStr(x.h)}')">${rgbStr(x.h)}</span><span class="ltag" onclick="event.stopPropagation();copy('${hslStr(x.h)}')">${hslStr(x.h)}</span></div></div><button class="fbtn${faved?' on':''}" onclick="event.stopPropagation();toggleFav('${x.h}',this)">${faved?'★':'☆'}</button></div>`;
+      }else{
+        html+=`<div class="card" style="animation-delay:${d}ms" onclick="openModal('${x.h}')"><div class="sw" style="background:${x.h}"><button class="fbtn${faved?' on':''}" onclick="event.stopPropagation();toggleFav('${x.h}',this)">${faved?'★':'☆'}</button></div><div class="cbody"><div class="cname">${x.n}</div><div class="crow"><span class="chex">${x.h}</span><button class="cpbtn" onclick="event.stopPropagation();copy('${x.h}')">Copy</button></div></div></div>`;
+      }
+    });
+    html+='</div>';
+  });
+  ct.innerHTML=html;
+  if(list.length>0)setHero(list[0]);
+}
+
+function setHero(x){
+  const hero=document.getElementById('hero');
+  hero.style.background=x.h;
+  const t=tc(x.h);
+  hero.querySelectorAll('.hero-eyebrow,.hero-name,.hcode').forEach(el=>el.style.color=t);
+  hero.querySelectorAll('.hcode').forEach(el=>{el.style.background=lum(x.h)>.55?'rgba(0,0,0,0.08)':'rgba(255,255,255,0.25)';el.style.borderColor=lum(x.h)>.55?'rgba(0,0,0,0.15)':'rgba(255,255,255,0.3)';});
+  document.getElementById('heroName').textContent=x.n;
+  const hx=document.getElementById('hHex'),rg=document.getElementById('hRgb'),hs=document.getElementById('hHsl');
+  hx.textContent=x.h;hx.onclick=()=>copy(x.h);
+  rg.textContent=rgbStr(x.h);rg.onclick=()=>copy(rgbStr(x.h));
+  hs.textContent=hslStr(x.h);hs.onclick=()=>copy(hslStr(x.h));
+}
+
+function openModal(hex){
+  const x=C.find(v=>v.h===hex);if(!x)return;
+  mHex=hex;setHero(x);
+  document.getElementById('mSw').style.background=hex;
+  document.getElementById('mName').textContent=x.n;
+  document.getElementById('mCat').textContent=x.c.toUpperCase()+' FAMILY';
+  const fb=document.getElementById('mFav');fb.textContent=favs.includes(hex)?'★ Saved':'☆ Save';fb.style.color=favs.includes(hex)?'#FF9500':'';
+  const{r,g,b}=hexToRgb(hex),hst=hslStr(hex),pts=hst.match(/\d+/g)||[0,0,0];
+  const tiles=[{l:'HEX',v:hex},{l:'RGB',v:rgbStr(hex)},{l:'HSL',v:hst},{l:'CMYK',v:cmykStr(hex)},{l:'Red Channel',v:String(r)},{l:'Green Channel',v:String(g)},{l:'Blue Channel',v:String(b)},{l:'Hue',v:(pts[0]||0)+'°'},{l:'Saturation',v:(pts[1]||0)+'%'},{l:'Lightness',v:(pts[2]||0)+'%'}];
+  document.getElementById('mTiles').innerHTML=tiles.map(t=>`<div class="tile" onclick="copy('${t.v}')"><div class="tlbl">${t.l}</div><div class="tval">${t.v}</div></div>`).join('');
+  document.getElementById('ov').classList.add('open');
+}
+
+function closeModal(e){if(e.target===document.getElementById('ov'))document.getElementById('ov').classList.remove('open');}
+function toggleFavModal(){if(!mHex)return;favs.includes(mHex)?favs=favs.filter(f=>f!==mHex):favs.push(mHex);localStorage.setItem('chr3_favs',JSON.stringify(favs));const fb=document.getElementById('mFav');fb.textContent=favs.includes(mHex)?'★ Saved':'☆ Save';fb.style.color=favs.includes(mHex)?'#FF9500':'';render();}
+function toggleFav(hex,btn){favs.includes(hex)?favs=favs.filter(f=>f!==hex):favs.push(hex);localStorage.setItem('chr3_favs',JSON.stringify(favs));btn.textContent=favs.includes(hex)?'★':'☆';btn.classList.toggle('on',favs.includes(hex));}
+
+let tt;
+function copy(text){navigator.clipboard.writeText(text).then(()=>{const t=document.getElementById('toast');t.textContent='Copied: '+text;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2200);});}
+
+function buildPills(){
+  const cats=['all','red','orange','yellow','green','blue','purple','pink','brown','gray','white','black','favorites'];
+  document.getElementById('pills').innerHTML=cats.map(cat=>`<button class="pill${cat===fil?' active':''}" data-cat="${cat}">${cat!=='all'&&cat!=='favorites'?`<span class="pdot" style="background:${CAT_DOT[cat]}"></span>`:''}${CAT_LBL[cat]||cat}</button>`).join('');
+  document.querySelectorAll('.pill').forEach(p=>p.addEventListener('click',()=>{fil=p.dataset.cat;document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));p.classList.add('active');render();}));
+}
+
+document.getElementById('searchInp').addEventListener('input',e=>{qry=e.target.value.trim();render();});
+document.getElementById('btnG').addEventListener('click',()=>{vw='grid';document.getElementById('btnG').classList.add('active');document.getElementById('btnL').classList.remove('active');render();});
+document.getElementById('btnL').addEventListener('click',()=>{vw='list';document.getElementById('btnL').classList.add('active');document.getElementById('btnG').classList.remove('active');render();});
+window.addEventListener('scroll',()=>document.getElementById('stbtn').classList.toggle('show',window.scrollY>500));
+
+// ═══════════════════════════════════════════════════════
+// PAGE SWITCHING
+// ═══════════════════════════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.tab').forEach((t,i)=>{const ids=['explorer','gradient','mixer'];t.classList.toggle('active',ids[i]===id);});
+  if(id==='gradient')initGradient();
+  if(id==='mixer')initMixer();
+}
+
+// ═══════════════════════════════════════════════════════
+// GRADIENT MAKER
+// ═══════════════════════════════════════════════════════
+let gradStops=['#FF6B6B','#4ECDC4'];
+
+const GRAD_PRESETS=[
+  {name:'Sunset',colors:['#FF6B6B','#FFE66D']},
+  {name:'Ocean',colors:['#667EEA','#764BA2']},
+  {name:'Forest',colors:['#56AB2F','#A8E063']},
+  {name:'Cotton Candy',colors:['#FFC3A0','#FFAFBD']},
+  {name:'Aurora',colors:['#00C9FF','#92FE9D']},
+  {name:'Burning',colors:['#F7971E','#FFD200']},
+  {name:'Royal',colors:['#141E30','#243B55']},
+  {name:'Peachy',colors:['#FFB75E','#ED8F03']},
+  {name:'Mystic',colors:['#3494E6','#EC6EAD']},
+  {name:'Meadow',colors:['#134E5E','#71B280']},
+  {name:'Rose',colors:['#F4A261','#E76F51','#264653']},
+  {name:'Neon Night',colors:['#0F0C29','#302B63','#24243E']},
+  {name:'Sky',colors:['#87CEEB','#E0F7FA','#FFFFFF']},
+  {name:'Tropical',colors:['#00B09B','#96C93D']},
+  {name:'Candy',colors:['#FF8C00','#FF0080']},
+  {name:'Deep Sea',colors:['#004E92','#000428']},
+  {name:'Berry',colors:['#9D50BB','#6E48AA']},
+  {name:'Mango',colors:['#FFE259','#FFA751']},
+  {name:'Cool Breeze',colors:['#2193B0','#6DD5ED']},
+  {name:'Fire',colors:['#f12711','#f5af19']},
+  {name:'Teal Purple',colors:['#1A2980','#26D0CE']},
+  {name:'Cherry Blossom',colors:['#FFB7C5','#FFF0F5','#FFB7C5']},
+  {name:'Midnight',colors:['#232526','#414345']},
+  {name:'Sunrise',colors:['#FF512F','#F09819']},
+];
+
+function initGradient(){
+  renderGradStops();
+  updateGradient();
+  renderPresets();
+}
+
+function renderGradStops(){
+  const el=document.getElementById('gradStops');
+  el.innerHTML=gradStops.map((hex,i)=>`
+    <div class="grad-stop">
+      <div class="stop-label">Color ${i+1}</div>
+      <div class="stop-inner">
+        <div class="color-pick-wrap">
+          <div class="swatch-btn" style="background:${hex}">
+            <input type="color" value="${hex}" oninput="gradStops[${i}]=this.value;document.getElementById('ghex${i}').value=this.value;this.parentElement.style.background=this.value;updateGradient()">
+          </div>
+        </div>
+        <input class="stop-hex" id="ghex${i}" value="${hex}" oninput="syncGradHex(${i},this.value)" maxlength="7">
+      </div>
+    </div>`).join('');
+}
+
+function syncGradHex(i,val){
+  if(/^#[0-9A-Fa-f]{6}$/.test(val)){gradStops[i]=val;updateGradient();}
+}
+
+function addStop(){
+  if(gradStops.length>=5)return;
+  gradStops.push('#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0').toUpperCase());
+  renderGradStops();updateGradient();
+}
+
+function removeStop(){
+  if(gradStops.length<=2)return;
+  gradStops.pop();
+  renderGradStops();updateGradient();
+}
+
+function updateGradient(){
+  const type=document.getElementById('gradType')?document.getElementById('gradType').value:'linear';
+  const dir=document.getElementById('gradDir')?document.getElementById('gradDir').value:'to right';
+  const stops=gradStops.join(', ');
+  let css,preview;
+  if(type==='radial'){css=`radial-gradient(circle, ${stops})`;preview=css;}
+  else if(type==='conic'){css=`conic-gradient(${stops})`;preview=css;}
+  else{css=`linear-gradient(${dir}, ${stops})`;preview=css;}
+  const box=document.getElementById('gradPreview');
+  if(box)box.style.background=preview;
+  const cssBox=document.getElementById('gradCSS');
+  if(cssBox)cssBox.textContent=`background: ${css};`;
+  renderChips();
+}
+
+function renderChips(){
+  const el=document.getElementById('gradChips');
+  if(!el)return;
+  el.innerHTML=gradStops.map(hex=>`<div class="grad-stop-chip"><div class="chip-sw" style="background:${hex}"></div><div class="chip-info"><strong style="font-family:'DM Mono',monospace;font-size:12px;">${hex}</strong><div class="chip-rgb">${rgbStr(hex)}</div></div></div>`).join('');
+}
+
+function copyGradCSS(){copy(document.getElementById('gradCSS').textContent);}
+
+function renderPresets(){
+  const el=document.getElementById('presetGrid');
+  if(!el)return;
+  el.innerHTML=GRAD_PRESETS.map(p=>{
+    const css=`linear-gradient(to right, ${p.colors.join(', ')})`;
+    return`<div class="preset-card" onclick="loadPreset(${JSON.stringify(p.colors).replace(/"/g,'&quot;')})">
+      <div class="preset-swatch" style="background:${css}"></div>
+      <div class="preset-info"><div class="preset-name">${p.name}</div><div class="preset-colors">${p.colors.join(' → ')}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function loadPreset(colors){
+  gradStops=[...colors];
+  renderGradStops();
+  updateGradient();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════════════════
+// COLOR MIXER
+// ═══════════════════════════════════════════════════════
+const MIX_PRESETS=[
+  {name:'Red + Blue → Purple',a:'#FF0000',b:'#0000FF'},{name:'Blue + Yellow → Green',a:'#0000FF',b:'#FFFF00'},{name:'Red + Yellow → Orange',a:'#FF0000',b:'#FFFF00'},{name:'Cyan + Magenta → Violet',a:'#00FFFF',b:'#FF00FF'},
+  {name:'White + Red → Pink',a:'#FFFFFF',b:'#FF0000'},{name:'Black + Red → Dark Red',a:'#000000',b:'#FF0000'},{name:'Green + Orange → Yellow-Green',a:'#008000',b:'#FFA500'},{name:'Purple + Orange → Brown',a:'#800080',b:'#FFA500'},
+  {name:'Pink + Blue → Lavender',a:'#FF69B4',b:'#4169E1'},{name:'Teal + Orange → Warm Gray',a:'#008080',b:'#FFA500'},{name:'Navy + Gold → Elegant',a:'#000080',b:'#FFD700'},{name:'Sky + Rose → Soft Mauve',a:'#87CEEB',b:'#FF007F'},
+];
+
+function initMixer(){
+  updateMixer();
+  renderMixPresets();
+}
+
+function syncHexA(){
+  const v=document.getElementById('mcHexA').value;
+  if(/^#[0-9A-Fa-f]{6}$/.test(v)){document.getElementById('mcPickA').value=v;document.getElementById('mcSwA').style.background=v;updateMixer();}
+}
+function syncHexB(){
+  const v=document.getElementById('mcHexB').value;
+  if(/^#[0-9A-Fa-f]{6}$/.test(v)){document.getElementById('mcPickB').value=v;document.getElementById('mcSwB').style.background=v;updateMixer();}
+}
+
+function updateMixer(){
+  const hexA=document.getElementById('mcPickA').value;
+  const hexB=document.getElementById('mcPickB').value;
+  const ratio=parseInt(document.getElementById('ratioSlider').value);
+  document.getElementById('mcHexA').value=hexA;
+  document.getElementById('mcHexB').value=hexB;
+  document.getElementById('mcSwA').style.background=hexA;
+  document.getElementById('mcSwB').style.background=hexB;
+  document.getElementById('ratioA').textContent=(100-ratio)+'%';
+  document.getElementById('ratioB').textContent=ratio+'%';
+
+  // color info A & B
+  const{r:ra,g:ga,b:ba}=hexToRgb(hexA);
+  const{r:rb,g:gb,b:bb}=hexToRgb(hexB);
+  document.getElementById('mcInfoA').innerHTML=`<div class="mc-code"><b>${hexA}</b> · ${rgbStr(hexA)}<br>${hslStr(hexA)}</div>`;
+  document.getElementById('mcInfoB').innerHTML=`<div class="mc-code"><b>${hexB}</b> · ${rgbStr(hexB)}<br>${hslStr(hexB)}</div>`;
+
+  // blend
+  const blended=blendColors(hexA,hexB,ratio);
+  const name=closestName(blended);
+  document.getElementById('mixResult').style.background=blended;
+  const tc2=tc(blended);
+  document.getElementById('mixName').style.color=tc2;
+  document.getElementById('mixName').textContent=name;
+
+  const{r:rc,g:gc,b:bc}=hexToRgb(blended);
+  const tiles=[{l:'HEX Code',v:blended},{l:'RGB',v:rgbStr(blended)},{l:'HSL',v:hslStr(blended)},{l:'CMYK',v:cmykStr(blended)},{l:'Red',v:String(rc)},{l:'Green',v:String(gc)},{l:'Blue',v:String(bc)},{l:'Formula',v:`${100-ratio}% A + ${ratio}% B`}];
+  document.getElementById('mixCodes').innerHTML=tiles.map(t=>`<div class="rcode" onclick="copy('${t.v}')"><div class="rcode-lbl">${t.l}</div><div class="rcode-val">${t.v}</div></div>`).join('');
+
+  // steps
+  const steps=10;
+  let stepsHtml='';
+  for(let i=0;i<=steps;i++){
+    const pct=(i/steps)*100;
+    const c=blendColors(hexA,hexB,pct);
+    stepsHtml+=`<div class="step" style="background:${c}" title="${c}: ${rgbStr(c)}" onclick="copy('${c}')"><span class="step-hex" style="color:${tc(c)}">${c}</span></div>`;
+  }
+  document.getElementById('mixSteps').innerHTML=stepsHtml;
+}
+
+function renderMixPresets(){
+  const el=document.getElementById('mixPresets');
+  if(!el)return;
+  el.innerHTML=MIX_PRESETS.map(p=>{
+    const mid=blendColors(p.a,p.b,50);
+    const css=`linear-gradient(to right, ${p.a}, ${mid}, ${p.b})`;
+    return`<div class="preset-card" onclick="loadMixPreset('${p.a}','${p.b}')">
+      <div class="preset-swatch" style="background:${css}"></div>
+      <div class="preset-info"><div class="preset-name">${p.name}</div><div class="preset-colors">${p.a} + ${p.b} = <strong>${mid}</strong></div></div>
+    </div>`;
+  }).join('');
+}
+
+function loadMixPreset(a,b){
+  document.getElementById('mcPickA').value=a;
+  document.getElementById('mcPickB').value=b;
+  document.getElementById('mcHexA').value=a;
+  document.getElementById('mcHexB').value=b;
+  document.getElementById('mcSwA').style.background=a;
+  document.getElementById('mcSwB').style.background=b;
+  document.getElementById('ratioSlider').value=50;
+  updateMixer();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+buildPills();
+render();
+</script>
+</body>
+</html>
