@@ -396,110 +396,30 @@ input[type=color]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cur
 
 const C = [];
 
-function hslToHex(h, s, l) {
-
-  s /= 100;
-  l /= 100;
-
-  const k = n => (n + h / 30) % 12;
-
-  const a = s * Math.min(l, 1 - l);
-
-  const f = n =>
-    l - a * Math.max(
-      -1,
-      Math.min(k(n) - 3,
-      Math.min(9 - k(n), 1))
-    );
-
-  return "#" + [f(0), f(8), f(4)]
-    .map(x =>
-      Math.round(x * 255)
-      .toString(16)
-      .padStart(2, "0")
-    )
-    .join("");
-}
-
-function getCategory(h, s, l) {
-
-  // black
-  if (l < 15)
-    return "black";
-
-  // white
-  if (l > 90 && s < 15)
-    return "white";
-
-  // gray
-  if (s < 10)
-    return "gray";
-
-  // brown
-  if (h >= 15 && h <= 40 && l < 45)
-    return "brown";
-
-  // red
-  if (h < 15 || h >= 345)
-    return "red";
-
-  // orange
-  if (h < 45)
-    return "orange";
-
-  // yellow
-  if (h < 70)
-    return "yellow";
-
-  // green
-  if (h < 160)
-    return "green";
-
-  // cyan
-  if (h < 200)
-    return "cyan";
-
-  // blue
-  if (h < 250)
-    return "blue";
-
-  // purple
-  if (h < 290)
-    return "purple";
-
-  // pink
-  if (h < 345)
-    return "pink";
-
-  return "generated";
-}
-
-function generateColors(limit = 1000000) {
+function generateMillionColors(limit = 1000000) {
 
   let count = 0;
 
-  for (let h = 0; h < 360; h += 0.05) {
+  for (let r = 0; r <= 255; r++) {
+    for (let g = 0; g <= 255; g++) {
+      for (let b = 0; b <= 255; b++) {
 
-    for (let s = 0; s <= 100; s += 2) {
-
-      for (let l = 0; l <= 100; l += 2) {
+        const hex =
+          "#" +
+          r.toString(16).padStart(2, "0") +
+          g.toString(16).padStart(2, "0") +
+          b.toString(16).padStart(2, "0");
 
         C.push({
-
           n: `Color ${count + 1}`,
-
-          h: hslToHex(h, s, l),
-
-          c: getCategory(h, s, l)
-
+          h: hex,
+          c: getCategory(r, g, b)
         });
 
         count++;
 
         if (count >= limit) {
-
           console.log("Generated:", count);
-
           return;
         }
       }
@@ -507,17 +427,104 @@ function generateColors(limit = 1000000) {
   }
 }
 
-generateColors();
+function getCategory(r, g, b) {
+
+  // white
+  if (r > 235 && g > 235 && b > 235)
+    return "white";
+
+  // black
+  if (r < 25 && g < 25 && b < 25)
+    return "black";
+
+  // gray
+  if (
+    Math.abs(r - g) < 15 &&
+    Math.abs(g - b) < 15
+  )
+    return "gray";
+
+  // brown
+  if (
+    r > 80 && r < 190 &&
+    g > 35 && g < 130 &&
+    b < 90
+  )
+    return "brown";
+
+  // pink
+  if (
+    r > 200 &&
+    g < 170 &&
+    b > 140
+  )
+    return "pink";
+
+  // red
+  if (
+    r > 180 &&
+    g < 110 &&
+    b < 110
+  )
+    return "red";
+
+  // orange
+  if (
+    r > 200 &&
+    g > 100 &&
+    g < 190 &&
+    b < 100
+  )
+    return "orange";
+
+  // yellow
+  if (
+    r > 200 &&
+    g > 200 &&
+    b < 130
+  )
+    return "yellow";
+
+  // green
+  if (
+    g > r &&
+    g > b
+  )
+    return "green";
+
+  // cyan
+  if (
+    g > 150 &&
+    b > 150 &&
+    r < 120
+  )
+    return "cyan";
+
+  // blue
+  if (
+    b > r &&
+    b > g
+  )
+    return "blue";
+
+  // purple
+  if (
+    r > 100 &&
+    b > 120 &&
+    g < 120
+  )
+    return "purple";
+
+  return "generated";
+}
+
+generateMillionColors();
 
 const ITEMS_PER_LOAD = 100;
 
-let visibleCount = ITEMS_PER_LOAD;
+let visibleColors = C.slice(0, ITEMS_PER_LOAD);
 
-function getVisibleColors() {
-
-  return C.slice(0, visibleCount);
-
-}
+renderColors(visibleColors);
 
 function loadMoreColors() {
 
