@@ -394,147 +394,32 @@ input[type=color]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cur
 // 1000 COLORS DATA
 // ═══════════════════════════════════════════════════════
 
-const C = [];
-
-function generateMillionColors(limit = 1000000) {
-
-  let count = 0;
-
-  for (let r = 0; r <= 255; r++) {
-    for (let g = 0; g <= 255; g++) {
-      for (let b = 0; b <= 255; b++) {
-
-        const hex =
-          "#" +
-          r.toString(16).padStart(2, "0") +
-          g.toString(16).padStart(2, "0") +
-          b.toString(16).padStart(2, "0");
-
-        C.push({
-          n: `Color ${count + 1}`,
-          h: hex,
-          c: getCategory(r, g, b)
-        });
-
-        count++;
-
-        if (count >= limit) {
-          console.log("Generated:", count);
-          return;
-        }
-      }
-    }
-  }
-}
-
-function getCategory(r, g, b) {
-
-  // white
-  if (r > 235 && g > 235 && b > 235)
-    return "white";
-
-  // black
-  if (r < 25 && g < 25 && b < 25)
-    return "black";
-
-  // gray
-  if (
-    Math.abs(r - g) < 15 &&
-    Math.abs(g - b) < 15
-  )
-    return "gray";
-
-  // brown
-  if (
-    r > 80 && r < 190 &&
-    g > 35 && g < 130 &&
-    b < 90
-  )
-    return "brown";
-
-  // pink
-  if (
-    r > 200 &&
-    g < 170 &&
-    b > 140
-  )
-    return "pink";
-
-  // red
-  if (
-    r > 180 &&
-    g < 110 &&
-    b < 110
-  )
-    return "red";
-
-  // orange
-  if (
-    r > 200 &&
-    g > 100 &&
-    g < 190 &&
-    b < 100
-  )
-    return "orange";
-
-  // yellow
-  if (
-    r > 200 &&
-    g > 200 &&
-    b < 130
-  )
-    return "yellow";
-
-  // green
-  if (
-    g > r &&
-    g > b
-  )
-    return "green";
-
-  // cyan
-  if (
-    g > 150 &&
-    b > 150 &&
-    r < 120
-  )
-    return "cyan";
-
-  // blue
-  if (
-    b > r &&
-    b > g
-  )
-    return "blue";
-
-  // purple
-  if (
-    r > 100 &&
-    b > 120 &&
-    g < 120
-  )
-    return "purple";
-
-  return "generated";
-}
-
-generateMillionColors();
-
-const ITEMS_PER_LOAD = 100;
-
-let visibleColors = C.slice(0, ITEMS_PER_LOAD);
-
-renderColors(visibleColors);
-
-function loadMoreColors() {
-
-  visibleCount += ITEMS_PER_LOAD;
-
-  renderColors(getVisibleColors());
-
-}
-
-renderColors(getVisibleColors());
+const C=[
+// REDS (50)
+{n:"Red",h:"#FF0000",c:"red"},{n:"Crimson",h:"#DC143C",c:"red"},{n:"Firebrick",h:"#B22222",c:"red"},{n:"Dark Red",h:"#8B0000",c:"red"},{n:"Indian Red",h:"#CD5C5C",c:"red"},{n:"Light Coral",h:"#F08080",c:"red"},{n:"Salmon",h:"#FA8072",c:"red"},{n:"Dark Salmon",h:"#E9967A",c:"red"},{n:"Tomato",h:"#FF6347",c:"red"},{n:"Coral Red",h:"#FF6B6B",c:"red"},{n:"Venetian Red",h:"#C80815",c:"red"},{n:"Ferrari Red",h:"#FF2800",c:"red"},{n:"Cadmium Red",h:"#E30022",c:"red"},{n:"Ruby",h:"#9B111E",c:"red"},{n:"Burgundy",h:"#800020",c:"red"},{n:"Rose Red",h:"#C21E56",c:"red"},{n:"Carmine",h:"#960018",c:"red"},{n:"Scarlet",h:"#FF2400",c:"red"},{n:"Lava",h:"#CF1020",c:"red"},{n:"Persian Red",h:"#CC3333",c:"red"},{n:"Barn Red",h:"#7C0A02",c:"red"},{n:"Apple Red",h:"#FF0800",c:"red"},{n:"Blood Red",h:"#660000",c:"red"},{n:"Brick Red",h:"#CB4154",c:"red"},{n:"Cherry",h:"#DE3163",c:"red"},{n:"Chestnut",h:"#954535",c:"red"},{n:"Cinnabar",h:"#E34234",c:"red"},{n:"Raspberry",h:"#E30B5D",c:"red"},{n:"Redwood",h:"#A45A52",c:"red"},{n:"Cardinal",h:"#C41E3A",c:"red"},{n:"Candy Apple",h:"#FF0800",c:"red"},{n:"Falu Red",h:"#801818",c:"red"},{n:"Fire Engine",h:"#CE2029",c:"red"},{n:"Harvard Crimson",h:"#C90016",c:"red"},{n:"Amaranth Red",h:"#D3212D",c:"red"},{n:"Dark Scarlet",h:"#560319",c:"red"},{n:"English Red",h:"#AB4B52",c:"red"},{n:"Imperial Red",h:"#ED2939",c:"red"},{n:"Jasper",h:"#D73B3E",c:"red"},{n:"Lust",h:"#E62020",c:"red"},{n:"Permanent Geranium",h:"#E12C2C",c:"red"},{n:"Portland Orange",h:"#FF5A36",c:"red"},{n:"Upsdell Red",h:"#AE2029",c:"red"},{n:"Valentine Red",h:"#893843",c:"red"},{n:"Vivid Red",h:"#F70D1A",c:"red"},{n:"Warm Red",h:"#FF3855",c:"red"},{n:"Wine",h:"#722F37",c:"red"},{n:"Tuscan Red",h:"#7C3030",c:"red"},{n:"Rust Red",h:"#AA4444",c:"red"},{n:"Coral",h:"#FF7F50",c:"red"},
+// ORANGES (50)
+{n:"Orange",h:"#FFA500",c:"orange"},{n:"Dark Orange",h:"#FF8C00",c:"orange"},{n:"Orange Red",h:"#FF4500",c:"orange"},{n:"Tangerine",h:"#F28500",c:"orange"},{n:"Amber",h:"#FFBF00",c:"orange"},{n:"Pumpkin",h:"#FF7518",c:"orange"},{n:"Burnt Orange",h:"#CC5500",c:"orange"},{n:"Persimmon",h:"#EC5800",c:"orange"},{n:"Mango",h:"#FF8243",c:"orange"},{n:"Apricot",h:"#FBCEB1",c:"orange"},{n:"Peach",h:"#FFCBA4",c:"orange"},{n:"Sandy Brown",h:"#F4A460",c:"orange"},{n:"Papaya Whip",h:"#FFEFD5",c:"orange"},{n:"Bisque",h:"#FFE4C4",c:"orange"},{n:"Ochre",h:"#CC7722",c:"orange"},{n:"Tiger Orange",h:"#FD7F20",c:"orange"},{n:"Bright Orange",h:"#FF5F1F",c:"orange"},{n:"Cheddar",h:"#FFA62B",c:"orange"},{n:"Clementine",h:"#E96300",c:"orange"},{n:"Creamsicle",h:"#FFB347",c:"orange"},{n:"Deep Carrot",h:"#E9692C",c:"orange"},{n:"Flame",h:"#E25822",c:"orange"},{n:"Gamboge",h:"#E49B0F",c:"orange"},{n:"Marigold",h:"#EAA221",c:"orange"},{n:"Princeton Orange",h:"#FF8F00",c:"orange"},{n:"Vermilion",h:"#E34234",c:"orange"},{n:"Atomic Tangerine",h:"#FF9966",c:"orange"},{n:"Butterscotch",h:"#E3963E",c:"orange"},{n:"Neon Carrot",h:"#FFA343",c:"orange"},{n:"Spanish Orange",h:"#E86100",c:"orange"},{n:"Sunset",h:"#FAD6A5",c:"orange"},{n:"Alloy Orange",h:"#C46210",c:"orange"},{n:"Blaze Orange",h:"#FF6700",c:"orange"},{n:"Bronze Yellow",h:"#737000",c:"orange"},{n:"Cadmium Orange",h:"#ED872D",c:"orange"},{n:"Copper Crayola",h:"#DA8A67",c:"orange"},{n:"Dark Tangerine",h:"#FFA812",c:"orange"},{n:"Deep Saffron",h:"#FF9933",c:"orange"},{n:"Giant's Orange",h:"#FE5A1D",c:"orange"},{n:"Golden Brown",h:"#996515",c:"orange"},{n:"Gold Fusion",h:"#85754E",c:"orange"},{n:"Harvest Gold",h:"#DA9100",c:"orange"},{n:"Hunyadi Yellow",h:"#EFC050",c:"orange"},{n:"International Orange",h:"#FF4F00",c:"orange"},{n:"Melon",h:"#FEBAAD",c:"orange"},{n:"Pastel Orange",h:"#FFB347",c:"orange"},{n:"Raw Sienna",h:"#D68A59",c:"orange"},{n:"Safety Orange",h:"#FF7800",c:"orange"},{n:"Tawny",h:"#CD5700",c:"orange"},{n:"UT Orange",h:"#FF8200",c:"orange"},
+// YELLOWS (50)
+{n:"Yellow",h:"#FFFF00",c:"yellow"},{n:"Gold",h:"#FFD700",c:"yellow"},{n:"Lemon",h:"#FFF44F",c:"yellow"},{n:"Goldenrod",h:"#DAA520",c:"yellow"},{n:"Dark Goldenrod",h:"#B8860B",c:"yellow"},{n:"Khaki",h:"#F0E68C",c:"yellow"},{n:"Dark Khaki",h:"#BDB76B",c:"yellow"},{n:"Banana",h:"#FFE135",c:"yellow"},{n:"Corn Yellow",h:"#FBEC5D",c:"yellow"},{n:"Canary",h:"#FFFF99",c:"yellow"},{n:"Naples Yellow",h:"#FADA5E",c:"yellow"},{n:"Mustard",h:"#FFDB58",c:"yellow"},{n:"Chartreuse Yellow",h:"#DFFF00",c:"yellow"},{n:"Vanilla",h:"#F3E5AB",c:"yellow"},{n:"Aureolin",h:"#FDEE00",c:"yellow"},{n:"Blond",h:"#FAF0BE",c:"yellow"},{n:"Buff",h:"#F0DC82",c:"yellow"},{n:"Butter",h:"#FFFAA0",c:"yellow"},{n:"Citrine",h:"#E4D00A",c:"yellow"},{n:"Cream",h:"#FFFDD0",c:"yellow"},{n:"Daffodil",h:"#FFFF31",c:"yellow"},{n:"Dandelion",h:"#F0E130",c:"yellow"},{n:"Flax",h:"#EEDC82",c:"yellow"},{n:"Hansa Yellow",h:"#E9D66B",c:"yellow"},{n:"Jasmine",h:"#F8DE7E",c:"yellow"},{n:"Jonquil",h:"#F4CA16",c:"yellow"},{n:"Straw",h:"#E4D96F",c:"yellow"},{n:"Saffron",h:"#F4C430",c:"yellow"},{n:"Sunflower",h:"#FFD800",c:"yellow"},{n:"Acid Yellow",h:"#E9FF32",c:"yellow"},{n:"Brass",h:"#B5A642",c:"yellow"},{n:"Chrome Yellow",h:"#FFA700",c:"yellow"},{n:"Golden Yellow",h:"#FFDF00",c:"yellow"},{n:"Mellow Yellow",h:"#F8DE7E",c:"yellow"},{n:"Mikado Yellow",h:"#FFC40C",c:"yellow"},{n:"Old Gold",h:"#CFB53B",c:"yellow"},{n:"Vegas Gold",h:"#C5B358",c:"yellow"},{n:"Lemon Glacier",h:"#FDFF00",c:"yellow"},{n:"Lemon Meringue",h:"#F6EABE",c:"yellow"},{n:"Lemon Yellow",h:"#FFF44F",c:"yellow"},{n:"Maximum Yellow",h:"#FAFA37",c:"yellow"},{n:"Minion Yellow",h:"#F5E642",c:"yellow"},{n:"Nyanza",h:"#E9FFDB",c:"yellow"},{n:"Pastel Yellow",h:"#FDFD96",c:"yellow"},{n:"Royal Yellow",h:"#FA9A00",c:"yellow"},{n:"School Bus Yellow",h:"#FFD800",c:"yellow"},{n:"Selective Yellow",h:"#FFBA00",c:"yellow"},{n:"Solar",h:"#EFA00B",c:"yellow"},{n:"Stil de Grain Yellow",h:"#FADA5E",c:"yellow"},{n:"Titanium Yellow",h:"#EEE600",c:"yellow"},
+// GREENS (100)
+{n:"Green",h:"#008000",c:"green"},{n:"Lime",h:"#00FF00",c:"green"},{n:"Lime Green",h:"#32CD32",c:"green"},{n:"Forest Green",h:"#228B22",c:"green"},{n:"Dark Green",h:"#006400",c:"green"},{n:"Sea Green",h:"#2E8B57",c:"green"},{n:"Medium Sea Green",h:"#3CB371",c:"green"},{n:"Spring Green",h:"#00FF7F",c:"green"},{n:"Medium Spring Green",h:"#00FA9A",c:"green"},{n:"Lawn Green",h:"#7CFC00",c:"green"},{n:"Chartreuse",h:"#7FFF00",c:"green"},{n:"Green Yellow",h:"#ADFF2F",c:"green"},{n:"Yellow Green",h:"#9ACD32",c:"green"},{n:"Olive",h:"#808000",c:"green"},{n:"Olive Drab",h:"#6B8E23",c:"green"},{n:"Dark Olive Green",h:"#556B2F",c:"green"},{n:"Pale Green",h:"#98FB98",c:"green"},{n:"Light Green",h:"#90EE90",c:"green"},{n:"Mint Green",h:"#98FF98",c:"green"},{n:"Emerald",h:"#50C878",c:"green"},{n:"Jade",h:"#00A86B",c:"green"},{n:"Teal Green",h:"#00827F",c:"green"},{n:"Sage Green",h:"#8FBC8F",c:"green"},{n:"Fern Green",h:"#4F7942",c:"green"},{n:"Hunter Green",h:"#355E3B",c:"green"},{n:"Artichoke",h:"#8F9779",c:"green"},{n:"Asparagus",h:"#87A96B",c:"green"},{n:"Avocado",h:"#568203",c:"green"},{n:"Bottle Green",h:"#006A4E",c:"green"},{n:"Brunswick Green",h:"#1B4D3E",c:"green"},{n:"Cadmium Green",h:"#006B3C",c:"green"},{n:"Celadon",h:"#ACE1AF",c:"green"},{n:"Hooker's Green",h:"#49796B",c:"green"},{n:"Irish Green",h:"#009A44",c:"green"},{n:"Kelly Green",h:"#4CBB17",c:"green"},{n:"Malachite",h:"#0BDA51",c:"green"},{n:"Moss Green",h:"#8A9A5B",c:"green"},{n:"Mountain Meadow",h:"#30BA8F",c:"green"},{n:"Pine Green",h:"#01796F",c:"green"},{n:"Pistachio",h:"#93C572",c:"green"},{n:"Shamrock",h:"#45CEA2",c:"green"},{n:"Viridian",h:"#40826D",c:"green"},{n:"Zomp",h:"#39A78E",c:"green"},{n:"Persian Green",h:"#00A693",c:"green"},{n:"Jungle Green",h:"#29AB87",c:"green"},{n:"Caribbean Green",h:"#00CC99",c:"green"},{n:"Seafoam",h:"#71EEB8",c:"green"},{n:"Teal Deer",h:"#99E6B3",c:"green"},{n:"Neon Green",h:"#39FF14",c:"green"},{n:"Apple Green",h:"#8DB600",c:"green"},{n:"Bangladesh Green",h:"#006A4E",c:"green"},{n:"British Racing",h:"#004225",c:"green"},{n:"Dartmouth Green",h:"#00703C",c:"green"},{n:"Laurel Green",h:"#A9BA9D",c:"green"},{n:"Mantis",h:"#74C365",c:"green"},{n:"Aquamarine",h:"#7FFFD4",c:"green"},{n:"Medium Aquamarine",h:"#66CDAA",c:"green"},{n:"Mint Cream",h:"#9FE2BF",c:"green"},{n:"Turquoise Green",h:"#A0D6B4",c:"green"},{n:"Electric Green",h:"#00FF00",c:"green"},{n:"Delhi Green",h:"#22640D",c:"green"},{n:"Amazon Green",h:"#3B7A57",c:"green"},{n:"Ao English",h:"#008000",c:"green"},{n:"Bitter Lime",h:"#BFFF00",c:"green"},{n:"Camouflage Green",h:"#78866B",c:"green"},{n:"Castleton Green",h:"#00563B",c:"green"},{n:"Chrome Green",h:"#1A6B3C",c:"green"},{n:"Crayola Green",h:"#1CAC78",c:"green"},{n:"Dark Cyan",h:"#008B8B",c:"green"},{n:"Dark Moss Green",h:"#4A5240",c:"green"},{n:"Erin",h:"#00FF40",c:"green"},{n:"GO Green",h:"#00AB66",c:"green"},{n:"Granny Smith Apple",h:"#A8E4A0",c:"green"},{n:"Green Munsell",h:"#00A877",c:"green"},{n:"Green NCS",h:"#009F6B",c:"green"},{n:"Green Pigment",h:"#00A550",c:"green"},{n:"Harlequin",h:"#3FFF00",c:"green"},{n:"Inchworm",h:"#B2EC5D",c:"green"},{n:"India Green",h:"#138808",c:"green"},{n:"Islamic Green",h:"#009000",c:"green"},{n:"Japanese Laurel",h:"#2E8B57",c:"green"},{n:"June Bud",h:"#BDDA57",c:"green"},{n:"Kiwi",h:"#8EE53F",c:"green"},{n:"Kombu Green",h:"#354230",c:"green"},{n:"Las Vegas Green",h:"#218559",c:"green"},{n:"Malachite Green",h:"#0BDA51",c:"green"},{n:"Maximum Green",h:"#5E8C31",c:"green"},{n:"Midori",h:"#2E8B57",c:"green"},{n:"Middle Green",h:"#4D8C57",c:"green"},{n:"Mint",h:"#3EB489",c:"green"},{n:"Myrtle Green",h:"#317873",c:"green"},{n:"Pakistan Green",h:"#006600",c:"green"},{n:"Paris Green",h:"#50C878",c:"green"},{n:"Patina Green",h:"#4D9B8A",c:"green"},{n:"Phthalo Green",h:"#123524",c:"green"},{n:"Rifle Green",h:"#444C38",c:"green"},{n:"SAE Green",h:"#009A44",c:"green"},{n:"Screamin Green",h:"#76FF7A",c:"green"},
+// BLUES (100)
+{n:"Blue",h:"#0000FF",c:"blue"},{n:"Navy",h:"#000080",c:"blue"},{n:"Dark Blue",h:"#00008B",c:"blue"},{n:"Medium Blue",h:"#0000CD",c:"blue"},{n:"Royal Blue",h:"#4169E1",c:"blue"},{n:"Cobalt Blue",h:"#0047AB",c:"blue"},{n:"Cornflower Blue",h:"#6495ED",c:"blue"},{n:"Sky Blue",h:"#87CEEB",c:"blue"},{n:"Light Sky Blue",h:"#87CEFA",c:"blue"},{n:"Deep Sky Blue",h:"#00BFFF",c:"blue"},{n:"Dodger Blue",h:"#1E90FF",c:"blue"},{n:"Steel Blue",h:"#4682B4",c:"blue"},{n:"Light Steel Blue",h:"#B0C4DE",c:"blue"},{n:"Powder Blue",h:"#B0E0E6",c:"blue"},{n:"Light Blue",h:"#ADD8E6",c:"blue"},{n:"Cadet Blue",h:"#5F9EA0",c:"blue"},{n:"Teal",h:"#008080",c:"blue"},{n:"Cyan",h:"#00FFFF",c:"blue"},{n:"Aqua",h:"#00FFFF",c:"blue"},{n:"Turquoise",h:"#40E0D0",c:"blue"},{n:"Medium Turquoise",h:"#48D1CC",c:"blue"},{n:"Dark Turquoise",h:"#00CED1",c:"blue"},{n:"Electric Blue",h:"#7DF9FF",c:"blue"},{n:"Cerulean",h:"#007BA7",c:"blue"},{n:"Azure",h:"#007FFF",c:"blue"},{n:"Sapphire",h:"#0F52BA",c:"blue"},{n:"Periwinkle",h:"#CCCCFF",c:"blue"},{n:"Baby Blue",h:"#89CFF0",c:"blue"},{n:"Air Force Blue",h:"#5D8AA8",c:"blue"},{n:"Alice Blue",h:"#F0F8FF",c:"blue"},{n:"Aquamarine Blue",h:"#7FFFD4",c:"blue"},{n:"Bleu de France",h:"#318CE7",c:"blue"},{n:"Blue Bell",h:"#A2A2D0",c:"blue"},{n:"Blue Gray",h:"#6699CC",c:"blue"},{n:"Bondi Blue",h:"#0095B6",c:"blue"},{n:"Columbia Blue",h:"#C4D8E2",c:"blue"},{n:"Denim",h:"#1560BD",c:"blue"},{n:"Egyptian Blue",h:"#1034A6",c:"blue"},{n:"Federal Blue",h:"#062A78",c:"blue"},{n:"Glaucous",h:"#6082B6",c:"blue"},{n:"Han Blue",h:"#446CCF",c:"blue"},{n:"Lapis Lazuli",h:"#26619C",c:"blue"},{n:"Midnight Blue",h:"#191970",c:"blue"},{n:"Pacific Blue",h:"#1CA9C9",c:"blue"},{n:"Prussian Blue",h:"#003153",c:"blue"},{n:"Tiffany Blue",h:"#0ABAB5",c:"blue"},{n:"Robin Egg Blue",h:"#00CCCC",c:"blue"},{n:"Vivid Sky Blue",h:"#00CCFF",c:"blue"},{n:"Vivid Cerulean",h:"#00AAEE",c:"blue"},{n:"Teal Blue",h:"#367588",c:"blue"},{n:"Dark Teal",h:"#003333",c:"blue"},{n:"Cyan Azure",h:"#4E82B4",c:"blue"},{n:"Ice Blue",h:"#D6ECFF",c:"blue"},{n:"Neon Blue",h:"#4D4DFF",c:"blue"},{n:"UCLA Blue",h:"#536895",c:"blue"},{n:"Independence",h:"#4C516D",c:"blue"},{n:"Indigo Dye",h:"#00416A",c:"blue"},{n:"Viridian Blue",h:"#0F5F98",c:"blue"},{n:"Dark Cyan",h:"#008B8B",c:"blue"},{n:"Teal Dark",h:"#008080",c:"blue"},{n:"Aero Blue",h:"#C9FFE5",c:"blue"},{n:"Argentinian Blue",h:"#6CB4E4",c:"blue"},{n:"Baby Blue Eyes",h:"#A1CAF1",c:"blue"},{n:"Beau Blue",h:"#BCD4E6",c:"blue"},{n:"Blue Jeans",h:"#5DADEC",c:"blue"},{n:"Blue Munsell",h:"#0093AF",c:"blue"},{n:"Blue NCS",h:"#0087BD",c:"blue"},{n:"Blue Pigment",h:"#333399",c:"blue"},{n:"Blue Sapphire",h:"#126180",c:"blue"},{n:"Blue Yonder",h:"#5072A7",c:"blue"},{n:"Brandeis Blue",h:"#0070FF",c:"blue"},{n:"Carolina Blue",h:"#56A0D3",c:"blue"},{n:"Celeste",h:"#B2FFFF",c:"blue"},{n:"Cerulean Blue",h:"#2A52BE",c:"blue"},{n:"Cerulean Frost",h:"#6D9BC3",c:"blue"},{n:"CG Blue",h:"#007AA5",c:"blue"},{n:"Dark Cornflower",h:"#26428B",c:"blue"},{n:"Dark Powder Blue",h:"#003399",c:"blue"},{n:"Dark Sky Blue",h:"#8CBED6",c:"blue"},{n:"Dark Slate Blue",h:"#483D8B",c:"blue"},{n:"Duke Blue",h:"#00009C",c:"blue"},{n:"Fluorescent Blue",h:"#15F4EE",c:"blue"},{n:"French Blue",h:"#0072BB",c:"blue"},{n:"Frenchman Blue",h:"#6D9BC3",c:"blue"},{n:"Iris Blue",h:"#5A4FCF",c:"blue"},{n:"Klein Blue",h:"#002FA7",c:"blue"},{n:"Light Cobalt Blue",h:"#88ACE0",c:"blue"},{n:"Light Cornflower",h:"#93CCEA",c:"blue"},{n:"Liberty",h:"#545AA7",c:"blue"},{n:"Livid",h:"#6699CC",c:"blue"},{n:"Majorelle Blue",h:"#6050DC",c:"blue"},{n:"Medium Slate Blue",h:"#7B68EE",c:"blue"},{n:"Muted Blue",h:"#6495ED",c:"blue"},{n:"Non Photo Blue",h:"#A4DDED",c:"blue"},{n:"Ocean Blue",h:"#4F42B5",c:"blue"},{n:"Olympic Blue",h:"#008ECC",c:"blue"},{n:"Palatinate Blue",h:"#273BE2",c:"blue"},{n:"Persian Blue",h:"#1C39BB",c:"blue"},{n:"Phthalo Blue",h:"#000F89",c:"blue"},{n:"Polynesian Blue",h:"#044A7A",c:"blue"},
+// PURPLES (60)
+{n:"Purple",h:"#800080",c:"purple"},{n:"Dark Purple",h:"#301934",c:"purple"},{n:"Medium Purple",h:"#9370DB",c:"purple"},{n:"Dark Magenta",h:"#8B008B",c:"purple"},{n:"Dark Violet",h:"#9400D3",c:"purple"},{n:"Violet",h:"#EE82EE",c:"purple"},{n:"Indigo",h:"#4B0082",c:"purple"},{n:"Blue Violet",h:"#8A2BE2",c:"purple"},{n:"Rebecca Purple",h:"#663399",c:"purple"},{n:"Plum",h:"#DDA0DD",c:"purple"},{n:"Thistle",h:"#D8BFD8",c:"purple"},{n:"Lavender",h:"#E6E6FA",c:"purple"},{n:"Orchid",h:"#DA70D6",c:"purple"},{n:"Medium Orchid",h:"#BA55D3",c:"purple"},{n:"Amethyst",h:"#9966CC",c:"purple"},{n:"Mauve",h:"#E0B0FF",c:"purple"},{n:"Wisteria",h:"#C9A0DC",c:"purple"},{n:"Grape",h:"#6F2DA8",c:"purple"},{n:"Byzantium",h:"#702963",c:"purple"},{n:"Heliotrope",h:"#DF73FF",c:"purple"},{n:"African Violet",h:"#B284BE",c:"purple"},{n:"Byzantine",h:"#BD33A4",c:"purple"},{n:"Clematis",h:"#4C2882",c:"purple"},{n:"Dark Byzantium",h:"#5D3954",c:"purple"},{n:"Dark Lavender",h:"#734F96",c:"purple"},{n:"Eggplant",h:"#614051",c:"purple"},{n:"Floral Lavender",h:"#B57EDC",c:"purple"},{n:"Iris",h:"#5A4FCF",c:"purple"},{n:"Lilac",h:"#C8A2C8",c:"purple"},{n:"Mulberry",h:"#C54B8C",c:"purple"},{n:"Palatinate",h:"#682860",c:"purple"},{n:"Ultra Violet",h:"#5F4B8B",c:"purple"},{n:"Neon Purple",h:"#BF00FF",c:"purple"},{n:"Vivid Violet",h:"#9F00FF",c:"purple"},{n:"Pale Purple",h:"#FAE6FA",c:"purple"},{n:"Eminence",h:"#6C3082",c:"purple"},{n:"Fandango",h:"#B53389",c:"purple"},{n:"French Lilac",h:"#86608E",c:"purple"},{n:"French Violet",h:"#8806CE",c:"purple"},{n:"Glossy Grape",h:"#AB92B3",c:"purple"},{n:"Grape Purple",h:"#4A235A",c:"purple"},{n:"Grullo",h:"#A99A86",c:"purple"},{n:"Han Purple",h:"#5218FA",c:"purple"},{n:"Jazzberry Jam",h:"#A50B5E",c:"purple"},{n:"Kobi",h:"#E79FC4",c:"purple"},{n:"Lavender Indigo",h:"#9457EB",c:"purple"},{n:"Lavender Purple",h:"#967BB6",c:"purple"},{n:"Liseran Purple",h:"#DE6FA1",c:"purple"},{n:"Magenta Dye",h:"#CA1F7B",c:"purple"},{n:"Maximum Purple",h:"#733380",c:"purple"},{n:"Mauve Taupe",h:"#915F6D",c:"purple"},{n:"Medium Lavender",h:"#DDA0DD",c:"purple"},{n:"Mimi Pink",h:"#FFDAE9",c:"purple"},{n:"Misty Lavender",h:"#D1BEE4",c:"purple"},{n:"Mode Beige",h:"#967117",c:"purple"},{n:"Nadeshiko Pink",h:"#F6ADC6",c:"purple"},{n:"Old Heliotrope",h:"#563C5C",c:"purple"},{n:"Old Lavender",h:"#796878",c:"purple"},{n:"Phlox",h:"#DF00FF",c:"purple"},{n:"Thistle Purple",h:"#D8BFD8",c:"purple"},
+// PINKS (50)
+{n:"Pink",h:"#FFC0CB",c:"pink"},{n:"Light Pink",h:"#FFB6C1",c:"pink"},{n:"Hot Pink",h:"#FF69B4",c:"pink"},{n:"Deep Pink",h:"#FF1493",c:"pink"},{n:"Medium Violet Red",h:"#C71585",c:"pink"},{n:"Pale Violet Red",h:"#DB7093",c:"pink"},{n:"Rose",h:"#FF007F",c:"pink"},{n:"Magenta",h:"#FF00FF",c:"pink"},{n:"Fuchsia",h:"#FF77FF",c:"pink"},{n:"Carnation Pink",h:"#FFA6C9",c:"pink"},{n:"Flamingo",h:"#FC8EAC",c:"pink"},{n:"Blush",h:"#DE5D83",c:"pink"},{n:"Bubblegum",h:"#FF85A2",c:"pink"},{n:"Shocking Pink",h:"#FC0FC0",c:"pink"},{n:"Cerise",h:"#DE3163",c:"pink"},{n:"Ultra Pink",h:"#FF6FFF",c:"pink"},{n:"Lavender Blush",h:"#FFF0F5",c:"pink"},{n:"Baker-Miller Pink",h:"#FF91AF",c:"pink"},{n:"Barbie Pink",h:"#E0218A",c:"pink"},{n:"Brink Pink",h:"#FB607F",c:"pink"},{n:"Candy Pink",h:"#E4717A",c:"pink"},{n:"China Pink",h:"#DE6FA1",c:"pink"},{n:"Classic Rose",h:"#FBCCE7",c:"pink"},{n:"Coral Pink",h:"#F88379",c:"pink"},{n:"Cotton Candy",h:"#FFBCD9",c:"pink"},{n:"Cyclamen",h:"#F56FA1",c:"pink"},{n:"Fairy Tale",h:"#F2C1D1",c:"pink"},{n:"French Rose",h:"#F64A8A",c:"pink"},{n:"Orchid Pink",h:"#F2BDCD",c:"pink"},{n:"Pastel Pink",h:"#FFD1DC",c:"pink"},{n:"Persian Rose",h:"#FE28A2",c:"pink"},{n:"Thulian Pink",h:"#DE6FA1",c:"pink"},{n:"Amaranth Pink",h:"#F19CBB",c:"pink"},{n:"Neon Pink",h:"#FF6EC7",c:"pink"},{n:"Rose Quartz",h:"#AA98A9",c:"pink"},{n:"Tickle Me Pink",h:"#FC89AC",c:"pink"},{n:"Charm Pink",h:"#E68FAC",c:"pink"},{n:"Cameo Pink",h:"#EFBBCC",c:"pink"},{n:"Carnelian",h:"#B31B1B",c:"pink"},{n:"Deep Rose",h:"#D44B6A",c:"pink"},{n:"Dogwood Rose",h:"#D71868",c:"pink"},{n:"Dust Storm",h:"#E5CCC9",c:"pink"},{n:"Fondant",h:"#F2BDCD",c:"pink"},{n:"Frenchman Rose",h:"#F64A8A",c:"pink"},{n:"Lavender Rose",h:"#FBA0E3",c:"pink"},{n:"Love Pink",h:"#FB9EC6",c:"pink"},{n:"Misty Rose",h:"#FFE4E1",c:"pink"},{n:"Pale Dogwood",h:"#ED7966",c:"pink"},{n:"Piggy Pink",h:"#FDDDE6",c:"pink"},{n:"Princess Pink",h:"#FF69B4",c:"pink"},
+// BROWNS (60)
+{n:"Brown",h:"#A52A2A",c:"brown"},{n:"Saddle Brown",h:"#8B4513",c:"brown"},{n:"Sienna",h:"#A0522D",c:"brown"},{n:"Peru",h:"#CD853F",c:"brown"},{n:"Chocolate",h:"#D2691E",c:"brown"},{n:"Tan",h:"#D2B48C",c:"brown"},{n:"Burlywood",h:"#DEB887",c:"brown"},{n:"Wheat",h:"#F5DEB3",c:"brown"},{n:"Moccasin",h:"#FFE4B5",c:"brown"},{n:"Navajo White",h:"#FFDEAD",c:"brown"},{n:"Blanched Almond",h:"#FFEBCD",c:"brown"},{n:"Sepia",h:"#704214",c:"brown"},{n:"Caramel",h:"#C68642",c:"brown"},{n:"Coffee",h:"#6F4E37",c:"brown"},{n:"Cinnamon",h:"#D2691E",c:"brown"},{n:"Almond",h:"#EFDECD",c:"brown"},{n:"Auburn",h:"#A52A2A",c:"brown"},{n:"Beaver",h:"#9F8170",c:"brown"},{n:"Bole",h:"#79443B",c:"brown"},{n:"Bronze",h:"#CD7F32",c:"brown"},{n:"Burnt Sienna",h:"#E97451",c:"brown"},{n:"Burnt Umber",h:"#8A3324",c:"brown"},{n:"Caput Mortuum",h:"#592720",c:"brown"},{n:"Coconut",h:"#965A3E",c:"brown"},{n:"Dark Brown",h:"#654321",c:"brown"},{n:"Desert",h:"#C19A6B",c:"brown"},{n:"Dirt",h:"#9B7653",c:"brown"},{n:"Earth Yellow",h:"#E1A95F",c:"brown"},{n:"Ecru",h:"#C2B280",c:"brown"},{n:"Fallow",h:"#C19A6B",c:"brown"},{n:"Fulvous",h:"#E48400",c:"brown"},{n:"Liver",h:"#674C47",c:"brown"},{n:"Nougat",h:"#C78540",c:"brown"},{n:"Russet",h:"#80461B",c:"brown"},{n:"Copper",h:"#B87333",c:"brown"},{n:"Rust",h:"#B7410E",c:"brown"},{n:"Walnut",h:"#773F1A",c:"brown"},{n:"Antique Bronze",h:"#665D1E",c:"brown"},{n:"Bistre",h:"#3D2B1F",c:"brown"},{n:"Bracken",h:"#4A3728",c:"brown"},{n:"Brick",h:"#CB4154",c:"brown"},{n:"Brindille",h:"#7A4426",c:"brown"},{n:"Chamoisee",h:"#A0785A",c:"brown"},{n:"Cinnamon Satin",h:"#CD607E",c:"brown"},{n:"Clay",h:"#9E5B40",c:"brown"},{n:"Dark Lava",h:"#483C32",c:"brown"},{n:"Dark Tan",h:"#918151",c:"brown"},{n:"Dark Wood",h:"#855E42",c:"brown"},{n:"Deer",h:"#BA8759",c:"brown"},{n:"Dun",h:"#C8AD7F",c:"brown"},{n:"Field Drab",h:"#6C541E",c:"brown"},{n:"Fuzzy Wuzzy",h:"#CC6666",c:"brown"},{n:"Ginger",h:"#B06500",c:"brown"},{n:"Hookworm",h:"#AA6C39",c:"brown"},{n:"Khaki Brown",h:"#C3B091",c:"brown"},{n:"Leather",h:"#967117",c:"brown"},{n:"Lion",h:"#C19A6B",c:"brown"},{n:"Medium Brown",h:"#7B3F00",c:"brown"},{n:"Pale Brown",h:"#987654",c:"brown"},{n:"Roasted Coffee",h:"#704241",c:"brown"},
+// GRAYS (40)
+{n:"Gray",h:"#808080",c:"gray"},{n:"Light Gray",h:"#D3D3D3",c:"gray"},{n:"Dark Gray",h:"#A9A9A9",c:"gray"},{n:"Dim Gray",h:"#696969",c:"gray"},{n:"Silver",h:"#C0C0C0",c:"gray"},{n:"Gainsboro",h:"#DCDCDC",c:"gray"},{n:"Slate Gray",h:"#708090",c:"gray"},{n:"Light Slate Gray",h:"#778899",c:"gray"},{n:"Dark Slate Gray",h:"#2F4F4F",c:"gray"},{n:"Charcoal",h:"#36454F",c:"gray"},{n:"Ash Gray",h:"#B2BEB5",c:"gray"},{n:"Battleship Gray",h:"#848482",c:"gray"},{n:"Pewter",h:"#96A8A1",c:"gray"},{n:"Platinum",h:"#E5E4E2",c:"gray"},{n:"Smoke",h:"#738276",c:"gray"},{n:"Stone",h:"#928E85",c:"gray"},{n:"Cadet Gray",h:"#91A3B0",c:"gray"},{n:"Cool Gray",h:"#8C92AC",c:"gray"},{n:"Davy's Gray",h:"#555555",c:"gray"},{n:"Feldgrau",h:"#4D5D53",c:"gray"},{n:"French Gray",h:"#BDBDC6",c:"gray"},{n:"Granite",h:"#676767",c:"gray"},{n:"Gunmetal",h:"#2A3439",c:"gray"},{n:"Marengo",h:"#4C5866",c:"gray"},{n:"Outer Space",h:"#414A4C",c:"gray"},{n:"Roman Silver",h:"#838996",c:"gray"},{n:"Shadow",h:"#8A795D",c:"gray"},{n:"Taupe Gray",h:"#8B8589",c:"gray"},{n:"Nickel",h:"#727472",c:"gray"},{n:"Iron",h:"#A19D94",c:"gray"},{n:"Lead",h:"#212121",c:"gray"},{n:"Anchor Gray",h:"#878787",c:"gray"},{n:"Cement",h:"#8D8D8D",c:"gray"},{n:"Cinereous",h:"#98817B",c:"gray"},{n:"Glaucous Gray",h:"#6082B6",c:"gray"},{n:"Pale Silver",h:"#C9C0BB",c:"gray"},{n:"Puce",h:"#CC8899",c:"gray"},{n:"Rhythm",h:"#777696",c:"gray"},{n:"Sonic Silver",h:"#757575",c:"gray"},{n:"Spanish Gray",h:"#989898",c:"gray"},
+// WHITES (30)
+{n:"White",h:"#FFFFFF",c:"white"},{n:"Snow",h:"#FFFAFA",c:"white"},{n:"Honeydew",h:"#F0FFF0",c:"white"},{n:"Mint Cream",h:"#F5FFFA",c:"white"},{n:"Azure White",h:"#F0FFFF",c:"white"},{n:"Ghost White",h:"#F8F8FF",c:"white"},{n:"Seashell",h:"#FFF5EE",c:"white"},{n:"Beige",h:"#F5F5DC",c:"white"},{n:"Floral White",h:"#FFFAF0",c:"white"},{n:"Ivory",h:"#FFFFF0",c:"white"},{n:"Old Lace",h:"#FDF5E6",c:"white"},{n:"Linen",h:"#FAF0E6",c:"white"},{n:"Antique White",h:"#FAEBD7",c:"white"},{n:"Cornsilk",h:"#FFF8DC",c:"white"},{n:"Light Yellow",h:"#FFFFE0",c:"white"},{n:"Baby Powder",h:"#FEFEFA",c:"white"},{n:"Dutch White",h:"#EFDFBB",c:"white"},{n:"Eggshell",h:"#F0EAD6",c:"white"},{n:"Isabelline",h:"#F4F0EC",c:"white"},{n:"Magnolia",h:"#F8F4FF",c:"white"},{n:"Pearl",h:"#EAE0C8",c:"white"},{n:"Cosmic Latte",h:"#FFF8E7",c:"white"},{n:"Champagne",h:"#F7E7CE",c:"white"},{n:"Cream White",h:"#FFFDD0",c:"white"},{n:"Alabaster",h:"#F2F0EB",c:"white"},{n:"Bone",h:"#E3DAC9",c:"white"},{n:"Cultured",h:"#F5F5F5",c:"white"},{n:"Lotion",h:"#FEFDFA",c:"white"},{n:"Parchment",h:"#F1E9D2",c:"white"},{n:"White Smoke",h:"#F5F5F5",c:"white"},
+// BLACKS (25)
+{n:"Black",h:"#000000",c:"black"},{n:"Jet Black",h:"#0A0A0A",c:"black"},{n:"Rich Black",h:"#010203",c:"black"},{n:"Onyx",h:"#353839",c:"black"},{n:"Licorice",h:"#1A1110",c:"black"},{n:"Eerie Black",h:"#1B1B1B",c:"black"},{n:"Raisin Black",h:"#242124",c:"black"},{n:"Dark Charcoal",h:"#333333",c:"black"},{n:"Night",h:"#0D0D0D",c:"black"},{n:"Dark Jungle",h:"#1A2421",c:"black"},{n:"Charleston Green",h:"#232B2B",c:"black"},{n:"Chinese Black",h:"#141414",c:"black"},{n:"Ebony",h:"#555D50",c:"black"},{n:"Obsidian",h:"#1B1811",c:"black"},{n:"Seal Brown",h:"#321414",c:"black"},{n:"Xiketic",h:"#052535",c:"black"},{n:"Ink",h:"#1F1F1F",c:"black"},{n:"Nero",h:"#252525",c:"black"},{n:"Oil Black",h:"#0C0C0C",c:"black"},{n:"Smoky Black",h:"#100C08",c:"black"},{n:"Space Black",h:"#0D0208",c:"black"},{n:"Vampire Black",h:"#080808",c:"black"},{n:"Cool Black",h:"#002E63",c:"black"},{n:"Matte Black",h:"#28282B",c:"black"},{n:"Outer Space",h:"#414A4C",c:"black"},
+// SPECIAL / METALLIC / NEONS
+{n:"Gold Metallic",h:"#D4AF37",c:"yellow"},{n:"Rose Gold",h:"#B76E79",c:"pink"},{n:"Silver Metallic",h:"#AAA9AD",c:"gray"},{n:"Copper Metallic",h:"#AD6F69",c:"brown"},{n:"Neon Green",h:"#39FF14",c:"green"},{n:"Neon Pink",h:"#FF6EC7",c:"pink"},{n:"Neon Orange",h:"#FF6700",c:"orange"},{n:"Neon Red",h:"#FF3131",c:"red"},{n:"Neon Cyan",h:"#00FFEF",c:"blue"},{n:"Electric Purple",h:"#BF00FF",c:"purple"},{n:"Vivid Orange",h:"#FF5F00",c:"orange"},{n:"Vivid Red",h:"#F70D1A",c:"red"},{n:"Laser Lemon",h:"#FEFE22",c:"yellow"},{n:"Shocking Green",h:"#8FFB8F",c:"green"},{n:"Pastel Blue",h:"#AEC6CF",c:"blue"},{n:"Pastel Green",h:"#77DD77",c:"green"},{n:"Pastel Violet",h:"#CB99C9",c:"purple"},{n:"Pastel Mint",h:"#98FF98",c:"green"},{n:"Pastel Cyan",h:"#87D3F8",c:"blue"},{n:"Pale Cornflower",h:"#ABCDEF",c:"blue"},{n:"Pale Lavender",h:"#DCD0FF",c:"purple"},{n:"Periwinkle Pastel",h:"#CCCCFF",c:"blue"},{n:"Sky Pastel",h:"#C9E8F5",c:"blue"},{n:"Sage Pastel",h:"#BCB88A",c:"green"},{n:"Blush Pastel",h:"#F9DDD9",c:"pink"},{n:"Cotton Pastel",h:"#F5F0F0",c:"white"},{n:"Cameo",h:"#EFBBCC",c:"pink"},{n:"Celeste",h:"#B2FFFF",c:"blue"},{n:"Champagne Gold",h:"#FAD5A5",c:"yellow"},{n:"Coquelicot",h:"#FF3800",c:"red"},{n:"Dark Aquamarine",h:"#009B77",c:"green"},{n:"Dark Chartreuse",h:"#007F00",c:"green"},{n:"Flirt",h:"#A2006D",c:"pink"},{n:"Languid Lavender",h:"#D6CADD",c:"purple"},{n:"Magic Mint",h:"#AAF0D1",c:"green"},{n:"Melon",h:"#FEBAAD",c:"orange"},{n:"Midnight Green",h:"#004953",c:"green"},{n:"Moonstone",h:"#3AA8C1",c:"blue"},{n:"Morning Blue",h:"#8DA399",c:"blue"},{n:"Moss",h:"#8A9A5B",c:"green"},{n:"Muted Green",h:"#5A7A61",c:"green"},{n:"Pale Aqua",h:"#BCD4E6",c:"blue"},{n:"Pale Cerulean",h:"#9BC4E2",c:"blue"},{n:"Pale Chestnut",h:"#DDADAF",c:"brown"},{n:"Pale Cyan",h:"#87D3F8",c:"blue"},{n:"Pale Gold",h:"#E6BE8A",c:"yellow"},{n:"Pale Magenta",h:"#F984E5",c:"pink"},{n:"Pale Pink",h:"#FADADD",c:"pink"},{n:"Pale Plum",h:"#DDA0DD",c:"purple"},{n:"Pale Taupe",h:"#BC987E",c:"brown"},{n:"Pale Yellow",h:"#FFFF99",c:"yellow"},
+];
 
 
 // ═══════════════════════════════════════════════════════
